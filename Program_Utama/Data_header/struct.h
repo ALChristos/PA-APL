@@ -11,7 +11,7 @@ struct Kolam
     bool status_kolam; // 0 atau false = kosong, 1 atau true = terisi
     int kapasitas;
     int populasi_ikan;
-    string tipe_kolam[];
+    string tipe_kolam[3];
 };
 
 struct Staff
@@ -19,8 +19,8 @@ struct Staff
     int id_staff;
     string username;
     string password;
-    bool regist_status;   // 0 atau false = ditolak, 1 atau true = diterima
-    bool employed_status; // 0 atau false = dipecat, 1 atau true = masih bekerja
+    bool regis_status;   
+    bool employed_status; 
 };
 
 struct Admin
@@ -37,8 +37,6 @@ struct Balance
 };
 
 Kolam daftarKolam[10];
-Staff daftarStaff[10];
-Admin daftarAdmin[3];
 Balance AkumulasiSaldo;
 
 #endif
