@@ -8,7 +8,7 @@
 using namespace std;
 using json = nlohmann::json;
 
-const string FILE_STAFF = "../Data_json/Data_staff.json";
+const string FILE_STAFF = "Data_json/Data_staff.json";
 
 void staff_regis()
 {
@@ -69,13 +69,13 @@ void staff_regis()
         staff_baru.id_staff = j.back()["id"].get<int>() + 1;
     }
 
-    json staffJson = {
+    json staffjson = {
         {"id", staff_baru.id_staff},
         {"nama", staff_baru.username},
         {"pass", staff_baru.password},
         {"status_terima", staff_baru.regis_status},
         {"status_kerja", staff_baru.employed_status}};
-    j.push_back(staffJson);
+    j.push_back(staffjson);
 
     ofstream fileOut(FILE_STAFF);
     fileOut << j.dump(4);
@@ -94,7 +94,7 @@ bool status_regis()
     cout << "=================================" << endl;
     cout << "===== CEK STATUS REGISTRASI =====" << endl;
     cout << "=================================" << endl;
-    cout << "Masukkan Username : ";
+    cout << "Masukkan Username: ";
     cin >> cek_username;
 
     json j;
@@ -110,19 +110,27 @@ bool status_regis()
             {
                 if (item["status_terima"] == true)
                 {
+                    cout << "[SELAMAT] Anda Diterima Sebagai Karyawan Tambak Lele :) !!!" << endl;
+                    system("pause");
+                    system("cls");
                     return true;
                 }
                 else
                 {
+                    cout << "[WAKWAW] Anda Ditolak Sebagai Karyawan Tambak Lele :( !!!" << endl;
+                    system("pause");
+                    system("cls");
                     return false;
                 }
             }
         }
     }
-    cout << "[ERROR] Username Tidak Ditemukan!!!" << endl;
-    system("pause");
-    system("cls");
-    return false;
+    else{
+        cout << "[ERROR] Username Tidak Ditemukan!!!" << endl;
+        system("pause");
+        system("cls");
+        return false;
+    }
 }
 
 bool login_staff()
@@ -177,9 +185,7 @@ bool login_staff()
                 else
                 {
                     batas_login += 1;
-
                     int sisa_percobaan = 3 - batas_login;
-
                     if (batas_login < 3)
                     {
                         cout << "[GAGAL] Login Gagal! Username atau Password Salah, Silahkan Coba Lagi (Sisa Percobaan: " << sisa_percobaan << "x )" << endl;

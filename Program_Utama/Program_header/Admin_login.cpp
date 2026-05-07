@@ -2,9 +2,11 @@
 #include <fstream>
 #include <string>
 #include "../Data_header/Admin_login.h"
+#include "../Data_header/Program_admin.h"
+#include "../Data_header/Program_staff.h"
 #include "../Data_header/struct.h"
 #include "../Data_json/json.hpp"
-#include "../Data_header/kelolaPakan.h"
+// #include "../Data_header/kelolaPakan.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -88,33 +90,98 @@ void menu_admin()
     {
         system("cls");
 
-        cout << "======================================" << endl;
-        cout << "===== RUANG KENDALI ADMIN TAMBAK =====" << endl;
-        cout << "======================================" << endl;
+        cout << "===========================================" << endl;
+        cout << "===== RUANG KENDALI ADMIN TAMBAK LELE =====" << endl;
+        cout << "===========================================" << endl;
         cout << "1. Kelola Kolam" << endl;
-        cout << "2. Tebar Benih Ikan" << endl;
-        cout << "3. Kelola Pakan Ikan" << endl;
-        cout << "4. Cek Laporan" << endl;
-        cout << "5. Keluar" << endl;
-        cout << "Pilihan: ";
+        cout << "2. Kelola Staff" << endl;
+        cout << "3. Tebar Benih Ikan" << endl;
+        cout << "4. Kelola Pakan Ikan" << endl;
+        cout << "5. Cek Laporan" << endl;
+        cout << "6. Keluar" << endl;
+        cout << "Masukan Pilihan: ";
         cin >> pilihan;
 
         switch (pilihan)
         {
-        case 1:
-            break;
+        case 1:{
+            system("cls");
+            cout << "============================" << endl;
+            cout << "===== MENU KEOLA KOLAM =====" << endl;
+            cout << "============================" << endl;
+            cout << "1. Buat Kolam" << endl;
+            cout << "2. Bongkar / Hapus Kolam" << endl;
+            cout << "3. Keluar" << endl;
+            cout << "Masukan Pilihan: ";
+            cin >> pilihan;
 
-        case 2:
-            break;
+            switch(pilihan){
+                case 1:
+                    buat_kolam();
+                    break;
 
-            case 3:
-                kelolaPakan(daftarKolam, 10, daftarAdmin, id_admin);
-                break;
+                case 2:
+                    bongkar_kolam();
+                    break;
+
+                case 3:
+                    system("cls");
+                    break;
+
+                default:
+                    cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                    system("pause");
+                    system("cls");
+                    break;
+            }
+
+            break;
+        }
+
+        case 2:{
+            system("cls");
+            cout << "============================" << endl;
+            cout << "===== MENU KEOLA STAFF =====" << endl;
+            cout << "============================" << endl;
+            cout << "1. Pecat Staff" << endl;
+            cout << "2. ACC Staff" << endl;
+            cout << "3. Keluar" << endl;
+            cout << "Masukan Pilihan: ";
+            cin >> pilihan;
+
+            switch(pilihan){
+                case 1:
+                    pecat_staff();
+                    break;
+
+                case 2:
+                    acc_staff();
+                    break;
+
+                case 3:
+                    system("cls");
+                    break;
+
+                default:
+                    cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                    system("pause");
+                    system("cls");
+                    break;
+            }
+            break;
+        }
+
+        case 3:
+            // kelolaPakan(daftarKolam, 10, daftarAdmin, id_admin);
+            break;
 
         case 4:
             break;
 
         case 5:
+            break;
+
+        case 6:
             admin_menu = false;
             system("pause");
             system("cls");

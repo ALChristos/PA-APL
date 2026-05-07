@@ -18,6 +18,7 @@ int main()
         cout << "1. Login Admin" << endl;
         cout << "2. Login Staff" << endl;
         cout << "3. Keluar" << endl;
+        cout << "Masukan Pilihan: ";
         cin >> pilihan;
 
         switch (pilihan)
@@ -51,6 +52,7 @@ int main()
                 cout << "1. Login" << endl;
                 cout << "2. Registrasi" << endl;
                 cout << "3. Keluar Menu Login Staff" << endl;
+                cout << "Masukan Pilihan: ";
                 cin >> pilihan;
 
                 switch (pilihan)
@@ -83,6 +85,7 @@ int main()
                     cout << "1. Registrasi" << endl;
                     cout << "2. Cek Status Registrasi" << endl;
                     cout << "3. Keluar Menu Registras Staff" << endl;
+                    cout << "Masukan Pilihan: ";
                     cin >> pilihan_regis;
 
                     switch (pilihan_regis)

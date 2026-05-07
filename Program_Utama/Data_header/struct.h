@@ -6,10 +6,10 @@ using namespace std;
 struct Kolam
 {
     int id_kolam;
-    bool status_kolam; // 0 atau false = kosong, 1 atau true = terisi
-    int kapasitas;
+    string status_kolam; 
+    string tipe_kolam;
     int populasi_ikan;
-    string tipe_kolam[3];
+    int kapasitas;
 };
 
 struct Staff
@@ -32,6 +32,14 @@ struct Balance
 {
     int total_modal;
     int total_keuntungan;
+};
+
+struct Keuangan 
+{
+    int id_transaksi;
+    double pengeluaran;
+    double untung_bersih; 
+    string keterangan;
 };
 
 #endif
