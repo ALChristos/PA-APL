@@ -99,38 +99,41 @@ bool status_regis()
 
     json j;
     ifstream fileIn(FILE_STAFF);
+    
     if (fileIn.is_open())
     {
-        fileIn >> j;
+        if (fileIn.peek() != std::ifstream::traits_type::eof()) {
+            fileIn >> j;
+        }
         fileIn.close();
 
-        for (auto &item : j)
-        {
-            if (item["nama"] == cek_username)
+        if (!j.empty()) {
+            for (auto &item : j)
             {
-                if (item["status_terima"] == true)
+                if (item["nama"] == cek_username)
                 {
-                    cout << "[SELAMAT] Anda Diterima Sebagai Karyawan Tambak Lele :) !!!" << endl;
-                    system("pause");
-                    system("cls");
-                    return true;
-                }
-                else
-                {
-                    cout << "[WAKWAW] Anda Ditolak Sebagai Karyawan Tambak Lele :( !!!" << endl;
-                    system("pause");
-                    system("cls");
-                    return false;
+                    if (item["status_terima"] == true)
+                    {
+                        cout << "[SELAMAT] Anda Diterima Sebagai Karyawan Tambak Lele :) !!!" << endl;
+                        system("pause");
+                        system("cls");
+                        return true; 
+                    }
+                    else
+                    {
+                        cout << "[WAKWAW] Anda Masih Belum Di ACC Sebagai Karyawan Tambak Lele :( !!!" << endl;
+                        system("pause");
+                        system("cls");
+                        return false; 
+                    }
                 }
             }
         }
     }
-    else{
-        cout << "[ERROR] Username Tidak Ditemukan!!!" << endl;
-        system("pause");
-        system("cls");
-        return false;
-    }
+    cout << "\n[ERROR] Username '" << cek_username << "' Tidak Ditemukan!!!" << endl;
+    system("pause");
+    system("cls");
+    return false;
 }
 
 bool login_staff()
@@ -138,9 +141,9 @@ bool login_staff()
     string log_username, log_pass;
     int batas_login = 0;
 
-    system("cls");
     while (batas_login < 3)
     {
+        system("cls");
         cout << "=======================" << endl;
         cout << "===== LOGIN STAFF =====" << endl;
         cout << "=======================" << endl;
@@ -151,59 +154,70 @@ bool login_staff()
 
         json j;
         ifstream fileIn(FILE_STAFF);
+        bool user_ditemukan = false; 
+
         if (fileIn.is_open())
         {
-            fileIn >> j;
+            if (fileIn.peek() != std::ifstream::traits_type::eof()) {
+                fileIn >> j;
+            }
             fileIn.close();
 
-            for (const auto &item : j)
-            {
-                if (item["nama"] == log_username && item["pass"] == log_pass)
+            if (!j.empty()) {
+                for (const auto &item : j)
                 {
-                    if (item["status_terima"] == true && item["status_kerja"] == true)
+                    if (item["nama"] == log_username && item["pass"] == log_pass)
                     {
-                        cout << "[BERHASIL] Login Berhasil! Selamat Datang, " << log_username << endl;
-                        system("pause");
-                        system("cls");
-                        return true;
-                    }
-                    else if (item["status_terima"] == true && item["status_kerja"] == false)
-                    {
-                        cout << "[GAGAL] Anda Sudah Di Pecat Oleh Admin!!!" << endl;
-                        system("pause");
-                        system("cls");
-                        return false;
-                    }
-                    else
-                    {
-                        cout << "[GAGAL] Login Gagal! Akun Anda belum disetujui oleh Admin!!!" << endl;
-                        system("pause");
-                        system("cls");
-                        return false;
-                    }
-                }
-                else
-                {
-                    batas_login += 1;
-                    int sisa_percobaan = 3 - batas_login;
-                    if (batas_login < 3)
-                    {
-                        cout << "[GAGAL] Login Gagal! Username atau Password Salah, Silahkan Coba Lagi (Sisa Percobaan: " << sisa_percobaan << "x )" << endl;
-                        system("pause");
-                        system("cls");
-                    }
-                    else
-                    {
-                        cout << "[KACAU] Anda Telah Salah 3x!!!" << endl;
-                        system("pause");
-                        system("cls");
-                        return false;
+                        user_ditemukan = true; 
+
+                        if (item["status_terima"] == true && item["status_kerja"] == true)
+                        {
+                            cout << "[BERHASIL] Login Berhasil! Selamat Datang, " << log_username << endl;
+                            system("pause");
+                            system("cls");
+                            return true;
+                        }
+                        else if (item["status_terima"] == true && item["status_kerja"] == false)
+                        {
+                            cout << "[GAGAL] Anda Sudah Di Pecat Oleh Admin!!!" << endl;
+                            system("pause");
+                            system("cls");
+                            return false;
+                        }
+                        else
+                        {
+                            cout << "[GAGAL] Login Gagal! Akun Anda belum disetujui oleh Admin!!!" << endl;
+                            system("pause");
+                            system("cls");
+                            return false;
+                        }
                     }
                 }
             }
         }
-        return false;
+
+        if (!user_ditemukan)
+        {
+            batas_login++;
+            int sisa_percobaan = 3 - batas_login;
+
+            if (batas_login < 3)
+            {
+                cout << "\n[GAGAL] Login Gagal! Username/Password Salah atau Belum Terdaftar!!!" << endl;
+                cout << "[SISA PERCOBAAN](Sisa Percobaan: " << sisa_percobaan << "x)" << endl;
+                system("pause");
+                system("cls");
+            }
+            else
+            {
+                cout << "[KACAU] Anda Telah Salah 3x!!!" << endl;
+                system("pause");
+                system("cls");
+                return false;
+            }
+        }
     }
+    return false;
 }
 
 void menu_staff()

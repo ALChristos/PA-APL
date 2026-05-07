@@ -106,33 +106,38 @@ void menu_admin()
         {
         case 1:{
             system("cls");
-            cout << "============================" << endl;
-            cout << "===== MENU KEOLA KOLAM =====" << endl;
-            cout << "============================" << endl;
-            cout << "1. Buat Kolam" << endl;
-            cout << "2. Bongkar / Hapus Kolam" << endl;
-            cout << "3. Keluar" << endl;
-            cout << "Masukan Pilihan: ";
-            cin >> pilihan;
+            bool loop = true;
 
-            switch(pilihan){
-                case 1:
-                    buat_kolam();
-                    break;
-
-                case 2:
-                    bongkar_kolam();
-                    break;
-
-                case 3:
-                    system("cls");
-                    break;
-
-                default:
-                    cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
-                    system("pause");
-                    system("cls");
-                    break;
+            while(loop){
+                cout << "============================" << endl;
+                cout << "===== MENU KEOLA KOLAM =====" << endl;
+                cout << "============================" << endl;
+                cout << "1. Buat Kolam" << endl;
+                cout << "2. Bongkar / Hapus Kolam" << endl;
+                cout << "3. Keluar" << endl;
+                cout << "Masukan Pilihan: ";
+                cin >> pilihan;
+    
+                switch(pilihan){
+                    case 1:
+                        buat_kolam();
+                        break;
+    
+                    case 2:
+                        bongkar_kolam();
+                        break;
+    
+                    case 3:
+                        system("cls");
+                        loop = false;
+                        break;
+    
+                    default:
+                        cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                        system("pause");
+                        system("cls");
+                        break;
+                }
             }
 
             break;
@@ -140,33 +145,38 @@ void menu_admin()
 
         case 2:{
             system("cls");
-            cout << "============================" << endl;
-            cout << "===== MENU KEOLA STAFF =====" << endl;
-            cout << "============================" << endl;
-            cout << "1. Pecat Staff" << endl;
-            cout << "2. ACC Staff" << endl;
-            cout << "3. Keluar" << endl;
-            cout << "Masukan Pilihan: ";
-            cin >> pilihan;
+            bool loop = true;
 
-            switch(pilihan){
-                case 1:
-                    pecat_staff();
-                    break;
-
-                case 2:
-                    acc_staff();
-                    break;
-
-                case 3:
-                    system("cls");
-                    break;
-
-                default:
-                    cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
-                    system("pause");
-                    system("cls");
-                    break;
+            while(loop){
+                cout << "============================" << endl;
+                cout << "===== MENU KEOLA STAFF =====" << endl;
+                cout << "============================" << endl;
+                cout << "1. Pecat Staff" << endl;
+                cout << "2. ACC Staff" << endl;
+                cout << "3. Keluar" << endl;
+                cout << "Masukan Pilihan: ";
+                cin >> pilihan;
+    
+                switch(pilihan){
+                    case 1:
+                        pecat_staff();
+                        break;
+    
+                    case 2:
+                        acc_staff();
+                        break;
+    
+                    case 3:
+                        system("cls");
+                        loop = false;
+                        break;
+    
+                    default:
+                        cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                        system("pause");
+                        system("cls");
+                        break;
+                }
             }
             break;
         }
@@ -183,7 +193,6 @@ void menu_admin()
 
         case 6:
             admin_menu = false;
-            system("pause");
             system("cls");
             break;
 

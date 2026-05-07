@@ -2,18 +2,16 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include <../Data_header/Program_admin.h>
-#include <../Data_header/struct.h>
-#include <../Data_json/Data_staff.json>
-#include <../Data_json/Data_kolam.json>
-#include <../Data_json/Laporan_keuangan.json>
-#include <../Data_json/json.hpp>
+#include "../Data_header/Program_admin.h"
+#include "../Data_header/struct.h"
+#include "../Data_json/json.hpp"
 
 using namespace std;
 using json = nlohmann::json;
 
 const string FILE_STAFF = "Data_json/Data_staff.json";
 const string FILE_KOLAM = "Data_json/Data_kolam.json";
+const string FILE_KEUANGAN = "Data_json/Laporan_keuangan.json";
 
 void acc_staff()
 {
@@ -133,6 +131,7 @@ void pecat_staff() {
     cin >> id_pilihan;
 
     if(id_pilihan == 0){
+        system("cls");
         return;
     } 
 
@@ -180,12 +179,12 @@ void buat_kolam(){
     // }
     // catch(const exception& e){
     //     cout<<"[ERORR] "<<e.what()<<endl;
-    // }
+    // } <-- Jangan Dihapus
 
-    // for(char &huruf : kolam.tipe_kolam){
-    //     huruf = tolower(huruf);
+    for(char &huruf : kolam.tipe_kolam){
+        huruf = tolower(huruf);
 
-    // } <-- Jangan di Hapus
+    }
 
     if(kolam.tipe_kolam == "kecil"){
         kolam.kapasitas = 500;
@@ -272,17 +271,17 @@ void bongkar_kolam(){
     }
 
     system("cls");
-    cout << "=========================================================" << endl;
-    cout << "================ DAFTAR KOLAM KOSONG ===================" << endl;
-    cout << "=========================================================" << endl;
-    cout << "ID\t| Tipe\t| Kapasitas\t| Populasi\t| Status\t|" << endl;
-    cout << "---------------------------------------------------------" << endl;
+    cout << "================================================================" << endl;
+    cout << "================ DAFTAR KOLAM KOSONG ===========================" << endl;
+    cout << "================================================================" << endl;
+    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+    cout << "----------------------------------------------------------------" << endl;
     
     bool kolam_kosong = false;
     for(const auto& item : j){
         if(item["status_kolam"] == "Kosong"){
-            cout << item["id"] << "\t|" << item["tipe"] << "\t|" << item["kapasitas"] << "\t|" << item["populasi"] << "\t|" << item["status_kolam"] << "\t|" << endl;
-            cout << "-------------------------------------------------------" << endl;
+            cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+            cout << "----------------------------------------------------------------" << endl;
             kolam_kosong = true;
         }
     }
@@ -299,6 +298,7 @@ void bongkar_kolam(){
     cin >> id_pilihan;
 
     if(id_pilihan == 0){
+        system("cls");
         return;
     } 
 

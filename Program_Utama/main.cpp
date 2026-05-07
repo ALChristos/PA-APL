@@ -67,7 +67,7 @@ int main()
                     }
                     else
                     {
-                        login = false;
+                        login = false; // <-- MASALAH
                     }
 
                     break;
@@ -78,35 +78,39 @@ int main()
 
                     system("cls");
                     int pilihan_regis;
+                    bool loop = true;
 
-                    cout << "=============================" << endl;
-                    cout << "=== MENU REGISTRASI STAFF ===" << endl;
-                    cout << "=============================" << endl;
-                    cout << "1. Registrasi" << endl;
-                    cout << "2. Cek Status Registrasi" << endl;
-                    cout << "3. Keluar Menu Registras Staff" << endl;
-                    cout << "Masukan Pilihan: ";
-                    cin >> pilihan_regis;
-
-                    switch (pilihan_regis)
-                    {
-                    case 1:
-                        staff_regis();
-                        break;
-
-                    case 2:
-                        status_regis();
-                        break;
-
-                    case 3:
-                        system("cls");
-                        break;
-
-                    default:
-                        cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
-                        system("pause");
-                        system("cls");
-                        break;
+                    while(loop){
+                        cout << "=============================" << endl;
+                        cout << "=== MENU REGISTRASI STAFF ===" << endl;
+                        cout << "=============================" << endl;
+                        cout << "1. Registrasi" << endl;
+                        cout << "2. Cek Status Registrasi" << endl;
+                        cout << "3. Keluar Menu Registras Staff" << endl;
+                        cout << "Masukan Pilihan: ";
+                        cin >> pilihan_regis;
+    
+                        switch (pilihan_regis)
+                        {
+                        case 1:
+                            staff_regis();
+                            break;
+    
+                        case 2:
+                            status_regis();
+                            break;
+    
+                        case 3:
+                            system("cls");
+                            loop = false;
+                            break;
+    
+                        default:
+                            cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                            system("pause");
+                            system("cls");
+                            break;
+                        }
                     }
 
                     break;
