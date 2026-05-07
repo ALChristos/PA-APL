@@ -104,4 +104,5 @@ void menu_admin(){
                 system("cls");
                 break; 
         }
+    }
 }
