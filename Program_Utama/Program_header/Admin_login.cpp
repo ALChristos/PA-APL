@@ -4,6 +4,7 @@
 #include "../Data_header/Admin_login.h"
 #include "../Data_header/struct.h"
 #include "../Data_json/json.hpp"
+#include "../Data_header/kelolaPakan.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -71,9 +72,9 @@ void menu_admin(){
         cout << "======================================" << endl;
         cout << "===== RUANG KENDALI ADMIN TAMBAK =====" << endl;
         cout << "======================================" << endl;
-        cout << "1. Keola Kolam" << endl;
+        cout << "1. Kelola Kolam" << endl;
         cout << "2. Tebar Benih Ikan" << endl;
-        cout << "3. Keola Pakan Ikan" << endl;
+        cout << "3. Kelola Pakan Ikan" << endl;
         cout << "4. Cek Laporan" << endl;
         cout << "5. Keluar" << endl;
         cout << "Pilihan: ";
@@ -87,6 +88,7 @@ void menu_admin(){
                 break;
 
             case 3:
+                kelolaPakan(daftarKolam, 10, daftarAdmin, id_admin);
                 break;
 
             case 4:
