@@ -3,8 +3,6 @@
 #include <iostream>
 using namespace std;
 
-string daftarTipeKolam[3] = {"Kecil", "Sedang", "Besar"};
-
 struct Kolam
 {
     int id_kolam;
@@ -19,8 +17,8 @@ struct Staff
     int id_staff;
     string username;
     string password;
-    bool regis_status;   
-    bool employed_status; 
+    bool regis_status;
+    bool employed_status;
 };
 
 struct Admin
@@ -35,8 +33,5 @@ struct Balance
     int total_modal;
     int total_keuntungan;
 };
-
-Kolam daftarKolam[10];
-Balance AkumulasiSaldo;
 
 #endif

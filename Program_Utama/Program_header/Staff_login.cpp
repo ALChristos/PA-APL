@@ -8,44 +8,51 @@
 using namespace std;
 using json = nlohmann::json;
 
-const string FILE_STAFF = "../Data_json/Data_staff.json"; 
+const string FILE_STAFF = "../Data_json/Data_staff.json";
 
-void staff_regis(){
+void staff_regis()
+{
     Staff staff_baru;
-    
+
     system("cls");
     cout << "============================" << endl;
     cout << "===== REGISTRASI STAFF =====" << endl;
     cout << "============================" << endl;
-    cout << "Masukkan Username : "; 
+    cout << "Masukkan Username : ";
     cin >> staff_baru.username;
-    cout << "Masukkan Password : "; 
+    cout << "Masukkan Password : ";
     cin >> staff_baru.password;
-    staff_baru.regis_status = false; 
+    staff_baru.regis_status = false;
     staff_baru.employed_status = false;
 
     json j;
     ifstream fileIn(FILE_STAFF);
-    if(fileIn.is_open()){
-        if(fileIn.peek() != std::ifstream::traits_type::eof()){
+    if (fileIn.is_open())
+    {
+        if (fileIn.peek() != std::ifstream::traits_type::eof())
+        {
             fileIn >> j;
         }
         fileIn.close();
     }
 
-    if(j.is_null()){
+    if (j.is_null())
+    {
         j = json::array();
     }
 
-    if (j.size() >= 10) {
+    if (j.size() >= 10)
+    {
         cout << "\n[ERROR] Registrasi Ditolak!!! Kuota Staff Tambak Lele FULL" << endl;
         system("pause");
         system("cls");
-        return; 
+        return;
     }
 
-    for(const auto& item : j) {
-        if(item["nama"] == staff_baru.username) {
+    for (const auto &item : j)
+    {
+        if (item["nama"] == staff_baru.username)
+        {
             cout << "[ERROR] Username Sudah Terdaftar!!! Silakan Gunakan Username Lain!!!" << endl;
             system("pause");
             system("cls");
@@ -53,24 +60,25 @@ void staff_regis(){
         }
     }
 
-    if(j.empty()){
-        staff_baru.id_staff = 1; 
-    } 
-    else{
+    if (j.empty())
+    {
+        staff_baru.id_staff = 1;
+    }
+    else
+    {
         staff_baru.id_staff = j.back()["id"].get<int>() + 1;
     }
 
     json staffJson = {
-        {"id", staff_baru.id_staff}, 
+        {"id", staff_baru.id_staff},
         {"nama", staff_baru.username},
         {"pass", staff_baru.password},
         {"status_terima", staff_baru.regis_status},
-        {"status_kerja", staff_baru.employed_status}
-    };
+        {"status_kerja", staff_baru.employed_status}};
     j.push_back(staffJson);
 
     ofstream fileOut(FILE_STAFF);
-    fileOut << j.dump(4); 
+    fileOut << j.dump(4);
     fileOut.close();
 
     cout << "[BERHASIL] Registrasi Berhasil! Akun Anda (ID: " << staff_baru.id_staff << ") Silahkan Tunggu Persetujuan Dari Admin" << endl;
@@ -78,29 +86,35 @@ void staff_regis(){
     system("cls");
 }
 
-bool status_regis(){
+bool status_regis()
+{
     string cek_username;
 
     system("cls");
     cout << "=================================" << endl;
     cout << "===== CEK STATUS REGISTRASI =====" << endl;
     cout << "=================================" << endl;
-    cout << "Masukkan Username : "; 
+    cout << "Masukkan Username : ";
     cin >> cek_username;
 
     json j;
     ifstream fileIn(FILE_STAFF);
-    if(fileIn.is_open()) {
+    if (fileIn.is_open())
+    {
         fileIn >> j;
         fileIn.close();
-        
-        for(auto& item : j){ 
-            if(item["nama"] == cek_username){
-                if(item["status_terima"] == true){
-                    return true; 
-                } 
-                else{
-                    return false; 
+
+        for (auto &item : j)
+        {
+            if (item["nama"] == cek_username)
+            {
+                if (item["status_terima"] == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
         }
@@ -111,64 +125,74 @@ bool status_regis(){
     return false;
 }
 
-bool login_staff() {
+bool login_staff()
+{
     string log_username, log_pass;
     int batas_login = 0;
 
     system("cls");
-    while(batas_login < 3){
-        cout << "=======================" << endl; 
+    while (batas_login < 3)
+    {
+        cout << "=======================" << endl;
         cout << "===== LOGIN STAFF =====" << endl;
-        cout << "=======================" << endl; 
-        cout << "Username : "; 
+        cout << "=======================" << endl;
+        cout << "Username : ";
         cin >> log_username;
-        cout << "Password : "; 
+        cout << "Password : ";
         cin >> log_pass;
-    
+
         json j;
         ifstream fileIn(FILE_STAFF);
-        if(fileIn.is_open()){
+        if (fileIn.is_open())
+        {
             fileIn >> j;
             fileIn.close();
-    
-            for(const auto& item : j){
-                if(item["nama"] == log_username && item["pass"] == log_pass){
-                    if(item["status_terima"] == true && item["status_kerja"] == true){
+
+            for (const auto &item : j)
+            {
+                if (item["nama"] == log_username && item["pass"] == log_pass)
+                {
+                    if (item["status_terima"] == true && item["status_kerja"] == true)
+                    {
                         cout << "[BERHASIL] Login Berhasil! Selamat Datang, " << log_username << endl;
                         system("pause");
                         system("cls");
                         return true;
-                    } 
-                    else if(item["status_terima"] == true && item["status_kerja"] == false){
+                    }
+                    else if (item["status_terima"] == true && item["status_kerja"] == false)
+                    {
                         cout << "[GAGAL] Anda Sudah Di Pecat Oleh Admin!!!" << endl;
                         system("pause");
                         system("cls");
                         return false;
                     }
-                    else{
+                    else
+                    {
                         cout << "[GAGAL] Login Gagal! Akun Anda belum disetujui oleh Admin!!!" << endl;
                         system("pause");
                         system("cls");
                         return false;
                     }
                 }
-                else{
+                else
+                {
                     batas_login += 1;
 
                     int sisa_percobaan = 3 - batas_login;
 
-                    if(batas_login < 3){
+                    if (batas_login < 3)
+                    {
                         cout << "[GAGAL] Login Gagal! Username atau Password Salah, Silahkan Coba Lagi (Sisa Percobaan: " << sisa_percobaan << "x )" << endl;
                         system("pause");
                         system("cls");
                     }
-                    else{
+                    else
+                    {
                         cout << "[KACAU] Anda Telah Salah 3x!!!" << endl;
                         system("pause");
                         system("cls");
-                        return false; 
+                        return false;
                     }
-
                 }
             }
         }
@@ -176,11 +200,13 @@ bool login_staff() {
     }
 }
 
-void menu_staff(){
+void menu_staff()
+{
     int pilihan;
     bool staff_menu = true;
 
-    while(staff_menu){
+    while (staff_menu)
+    {
         system("cls");
 
         cout << "======================================" << endl;
@@ -193,26 +219,28 @@ void menu_staff(){
         cout << "Pilihan: ";
         cin >> pilihan;
 
-        switch(pilihan){
-            case 1:
-                break;
+        switch (pilihan)
+        {
+        case 1:
+            break;
 
-            case 2:
-                break;
+        case 2:
+            break;
 
-            case 3:
-                break;
+        case 3:
+            break;
 
-            case 4:
-                staff_menu = false;
-                system("pause");
-                system("cls");
-                break;
+        case 4:
+            staff_menu = false;
+            system("pause");
+            system("cls");
+            break;
 
-            default:
-                cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
-                system("pause");
-                system("cls");
-                break; 
+        default:
+            cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+            system("pause");
+            system("cls");
+            break;
         }
+    }
 }
