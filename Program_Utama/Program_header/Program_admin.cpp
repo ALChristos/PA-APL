@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <cctype>
+#include <stdexcept> 
 #include "../Data_header/Program_admin.h"
 #include "../Data_header/struct.h"
 #include "../Data_json/json.hpp"
@@ -55,13 +56,43 @@ void acc_staff()
         return;
     }
 
-    int id_pilihan;
-    cout << "\nMasukkan ID Staff yang ingin di-ACC (0 untuk batal): ";
-    cin >> id_pilihan;
+    int id_pilihan = -1;
+    string input_id;
 
-    if(id_pilihan == 0){
-        return;
-    } 
+    while(true){
+        try{
+            cout << "\nMasukkan ID Staff yang ingin di-ACC (0 untuk batal): ";
+            getline(cin >> ws, input_id);
+    
+            id_pilihan = stoi(input_id);
+
+            if(id_pilihan == 0){
+                break;
+                return;
+            } 
+        }
+        catch(const exception& e){
+            cout << "[ERROR] ID Tidak Valid!!!" << endl;
+            system("pause");
+            system("cls");
+
+            cout << "======================================================" << endl;
+            cout << "============== DAFTAR STAFF MENUNGGU ACC =============" << endl;
+            cout << "======================================================" << endl;
+            cout << "ID\t| Username\t| Status\t|" << endl;
+            cout << "------------------------------------------------------" << endl;
+            
+            for (const auto& item : j)
+            {
+                if (item["status_terima"] == false) {
+                    cout << item["id"] << "\t|" << item["nama"] << "\t| Menunggu\t |" << endl;
+                    cout << "------------------------------------------------------" << endl;
+                }
+            }
+        }
+
+        break;
+    }
 
     bool ditemukan = false;
     for (auto& item : j){
@@ -126,14 +157,44 @@ void pecat_staff() {
         return;
     }
 
-    int id_pilihan;
-    cout << "\nMasukkan ID Staff Yang Ingin Di PHK (0 untuk batal): ";
-    cin >> id_pilihan;
+    int id_pilihan = -1;
+    string input_id;
 
-    if(id_pilihan == 0){
-        system("cls");
-        return;
-    } 
+    while(true){
+        try{
+            cout << "\nMasukkan ID Staff Yang Ingin Di PHK (0 untuk batal): ";
+            getline(cin >> ws, input_id);
+
+            id_pilihan = stoi(input_id);
+
+            if(id_pilihan == 0){
+                system("cls");
+                return;
+            } 
+            break;
+
+        }
+        catch(const exception& e){
+            cout << "[ERROR] ID Tidak Valid!!!" << endl;
+            system("pause");
+            system("cls");
+
+            cout << "=======================================================" << endl;
+            cout << "================ DAFTAR STAFF AKTIF ===================" << endl;
+            cout << "=======================================================" << endl;
+            cout << "ID\t| Username\t| Status\t|" << endl;
+            cout << "-------------------------------------------------------" << endl;
+            
+            for(const auto& item : j){
+                if(item["status_terima"] == true && item["status_kerja"] == true){
+                    cout << item["id"] << "\t|" << item["nama"] << "\t| Aktif Bekerja\t|" << endl;
+                    cout << "-------------------------------------------------------" << endl;
+                }
+            }
+        }
+
+        break;
+    }
 
     bool ditemukan = false;
     for (auto& item : j) {
@@ -162,46 +223,6 @@ void pecat_staff() {
 void buat_kolam(){
     Kolam kolam;
 
-    system("cls");
-    cout << "============================" << endl;
-    cout << "======== BUAT KOLAM ========" << endl;
-    cout << "============================" << endl;
-    cout << "Masukkan Tipe Kolam (Kecil, Sedang, Besar): ";
-    cin >> kolam.tipe_kolam;
-
-    kolam.status_kolam = "Kosong";
-    kolam.populasi_ikan = 0;
-
-    // try{
-    //     if(kolam.tipe_kolam == ""){
-    //         throw invalid_argument("Tipe Kolam Tidak Boleh Kosong!!!");
-    //     }
-    // }
-    // catch(const exception& e){
-    //     cout<<"[ERORR] "<<e.what()<<endl;
-    // } <-- Jangan Dihapus
-
-    for(char &huruf : kolam.tipe_kolam){
-        huruf = tolower(huruf);
-
-    }
-
-    if(kolam.tipe_kolam == "kecil"){
-        kolam.kapasitas = 500;
-    }
-    else if(kolam.tipe_kolam == "sedang"){
-        kolam.kapasitas = 1500;
-    }
-    else if(kolam.tipe_kolam == "besar"){
-        kolam.kapasitas = 3000;
-    }
-    else{
-        cout << "[ERROR] Pilihan Tidak Valid!!!" << endl;
-        system("pause");
-        system("cls");
-        return;
-    }
-
     json j;
     ifstream fileIn(FILE_KOLAM);
     if (fileIn.is_open())
@@ -221,6 +242,36 @@ void buat_kolam(){
     if (j.size() >= 10)
     {
         cout << "\n[ERROR] Kuota Kolam Tambak Lele FULL!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+
+    system("cls");
+    cout << "============================" << endl;
+    cout << "======== BUAT KOLAM ========" << endl;
+    cout << "============================" << endl;
+    cout << "Masukkan Tipe Kolam (Kecil, Sedang, Besar): ";
+    getline(cin >> ws, kolam.tipe_kolam);
+
+    kolam.status_kolam = "Kosong";
+    kolam.populasi_ikan = 0;
+
+    for(char &huruf : kolam.tipe_kolam){
+        huruf = tolower(huruf);
+    }
+
+    if(kolam.tipe_kolam == "kecil"){
+        kolam.kapasitas = 500;
+    }
+    else if(kolam.tipe_kolam == "sedang"){
+        kolam.kapasitas = 1500;
+    }
+    else if(kolam.tipe_kolam == "besar"){
+        kolam.kapasitas = 3000;
+    }
+    else{
+        cout << "[ERROR] Pilihan Tidak Valid!!!" << endl;
         system("pause");
         system("cls");
         return;
@@ -293,14 +344,44 @@ void bongkar_kolam(){
         return;
     }
 
-    int id_pilihan;
-    cout << "\nMasukkan ID Kolam Yang Ingin Di Bongkar/Hapus (0 untuk batal): ";
-    cin >> id_pilihan;
+    int id_pilihan = -1;
+    string input_id;
 
-    if(id_pilihan == 0){
-        system("cls");
-        return;
-    } 
+    while(true){
+        try{
+            cout << "\nMasukkan ID Kolam Yang Ingin Di Bongkar/Hapus (0 untuk batal): ";
+            getline(cin >> ws, input_id);
+
+            id_pilihan = stoi(input_id);
+
+            if(id_pilihan == 0){
+                system("cls");
+                break;
+                return;
+            } 
+        }
+        catch(const exception& e){
+            cout << "[ERROR] ID Tidak Valid!!!" << endl;
+            system("pause");
+            system("cls");
+
+            cout << "================================================================" << endl;
+            cout << "================ DAFTAR KOLAM KOSONG ===========================" << endl;
+            cout << "================================================================" << endl;
+            cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+            cout << "----------------------------------------------------------------" << endl;
+            
+            for(const auto& item : j){
+                if(item["status_kolam"] == "Kosong"){
+                    cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+                    cout << "----------------------------------------------------------------" << endl;
+                }
+            }
+        }
+
+        break;
+    }
+   
 
     bool ditemukan = false;
     for (auto it = j.begin(); it != j.end(); ++it) {

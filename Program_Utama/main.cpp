@@ -7,7 +7,8 @@ using namespace std;
 
 int main()
 {
-    int pilihan;
+    string pilihan;
+    int input_pilihan = 0;
 
     while (true)
     {
@@ -19,9 +20,16 @@ int main()
         cout << "2. Login Staff" << endl;
         cout << "3. Keluar" << endl;
         cout << "Masukan Pilihan: ";
-        cin >> pilihan;
+        getline(cin >> ws, pilihan);
 
-        switch (pilihan)
+        try{
+            input_pilihan = stoi(pilihan);
+        }
+        catch(const exception& e){
+            input_pilihan = 0;
+        }
+
+        switch (input_pilihan)
         {
         case 1:
         {
@@ -53,9 +61,16 @@ int main()
                 cout << "2. Registrasi" << endl;
                 cout << "3. Keluar Menu Login Staff" << endl;
                 cout << "Masukan Pilihan: ";
-                cin >> pilihan;
+                getline(cin >> ws, pilihan);
 
-                switch (pilihan)
+                try{
+                    input_pilihan = stoi(pilihan);
+                }
+                catch(const exception& e){
+                    input_pilihan = 0;
+                }
+
+                switch (input_pilihan)
                 {
                 case 1:
                 {
@@ -65,10 +80,6 @@ int main()
                     {
                         menu_staff();
                     }
-                    else
-                    {
-                        login = false; // <-- MASALAH
-                    }
 
                     break;
                 }
@@ -77,7 +88,8 @@ int main()
                 {
 
                     system("cls");
-                    int pilihan_regis;
+                    string pil_regis;
+                    int pilihan_regis = 0;
                     bool loop = true;
 
                     while(loop){
@@ -88,8 +100,15 @@ int main()
                         cout << "2. Cek Status Registrasi" << endl;
                         cout << "3. Keluar Menu Registras Staff" << endl;
                         cout << "Masukan Pilihan: ";
-                        cin >> pilihan_regis;
-    
+                        getline(cin >> ws, pil_regis);
+                        
+                        try{
+                            pilihan_regis = stoi(pil_regis);
+                        }
+                        catch(const exception& e){
+                            pilihan_regis = 0;
+                        }
+
                         switch (pilihan_regis)
                         {
                         case 1:

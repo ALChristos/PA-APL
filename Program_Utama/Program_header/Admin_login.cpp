@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype>
+#include <stdexcept>
 #include "../Data_header/Admin_login.h"
 #include "../Data_header/Program_admin.h"
 #include "../Data_header/Program_staff.h"
@@ -18,6 +20,7 @@ bool login_admin()
 {
     string nama, pass;
     int batas_login = 0;
+    bool login_admin = true;
 
     while (batas_login < 3)
     {
@@ -26,14 +29,13 @@ bool login_admin()
         cout << "===== LOGIN ADMIN =====" << endl;
         cout << "=======================" << endl;
         cout << "Username : ";
-        cin >> nama;
+        getline(cin >> ws, nama);
         cout << "Password : ";
-        cin >> pass;
+        getline(cin >> ws, pass);
 
         json j;
         ifstream fileIn(FILE_ADMIN);
 
-        // Menambah pesan status file
         if (!fileIn)
         {
             cout << "FILE GAGAL DIBUKA!" << endl;
@@ -71,7 +73,7 @@ bool login_admin()
         }
         else
         {
-            cout << "[KACAU] Anda Telah Salah 3x. Kembali ke Menu Utama!!!" << endl;
+            cout << "[FATAL] Anda Telah Salah Login 3x Sebagai ADMIN!!!" << endl;
             system("pause");
             system("cls");
             return false;
@@ -83,7 +85,8 @@ bool login_admin()
 
 void menu_admin()
 {
-    int pilihan;
+    int pilihan = 0;
+    string pilihan_menu;
     bool admin_menu = true;
 
     while (admin_menu)
@@ -100,15 +103,22 @@ void menu_admin()
         cout << "5. Cek Laporan" << endl;
         cout << "6. Keluar" << endl;
         cout << "Masukan Pilihan: ";
-        cin >> pilihan;
+        getline(cin >> ws, pilihan_menu);
+
+        try{
+            pilihan = stoi(pilihan_menu);
+        }
+        catch(const exception& e){
+            pilihan = 0;
+        }
 
         switch (pilihan)
         {
         case 1:{
-            system("cls");
             bool loop = true;
-
+            
             while(loop){
+                system("cls");
                 cout << "============================" << endl;
                 cout << "===== MENU KEOLA KOLAM =====" << endl;
                 cout << "============================" << endl;
@@ -116,7 +126,14 @@ void menu_admin()
                 cout << "2. Bongkar / Hapus Kolam" << endl;
                 cout << "3. Keluar" << endl;
                 cout << "Masukan Pilihan: ";
-                cin >> pilihan;
+                getline(cin >> ws, pilihan_menu);
+
+                try{
+                    pilihan = stoi(pilihan_menu);
+                }
+                catch(const exception& e){
+                    pilihan = 0;
+                }
     
                 switch(pilihan){
                     case 1:
@@ -135,7 +152,6 @@ void menu_admin()
                     default:
                         cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
                         system("pause");
-                        system("cls");
                         break;
                 }
             }
@@ -144,10 +160,10 @@ void menu_admin()
         }
 
         case 2:{
-            system("cls");
             bool loop = true;
-
+            
             while(loop){
+                system("cls");
                 cout << "============================" << endl;
                 cout << "===== MENU KEOLA STAFF =====" << endl;
                 cout << "============================" << endl;
@@ -155,7 +171,14 @@ void menu_admin()
                 cout << "2. ACC Staff" << endl;
                 cout << "3. Keluar" << endl;
                 cout << "Masukan Pilihan: ";
-                cin >> pilihan;
+                getline(cin >> ws, pilihan_menu);
+
+                try{
+                    pilihan = stoi(pilihan_menu);
+                }
+                catch(const exception& e){
+                    pilihan = 0;
+                }
     
                 switch(pilihan){
                     case 1:
@@ -174,7 +197,6 @@ void menu_admin()
                     default:
                         cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
                         system("pause");
-                        system("cls");
                         break;
                 }
             }

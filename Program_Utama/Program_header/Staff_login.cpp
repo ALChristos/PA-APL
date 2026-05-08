@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype>    
+#include <stdexcept> 
 #include "../Data_header/Staff_login.h"
 #include "../Data_header/struct.h"
 #include "../Data_json/json.hpp"
@@ -13,17 +15,7 @@ const string FILE_STAFF = "Data_json/Data_staff.json";
 void staff_regis()
 {
     Staff staff_baru;
-
-    system("cls");
-    cout << "============================" << endl;
-    cout << "===== REGISTRASI STAFF =====" << endl;
-    cout << "============================" << endl;
-    cout << "Masukkan Username : ";
-    cin >> staff_baru.username;
-    cout << "Masukkan Password : ";
-    cin >> staff_baru.password;
-    staff_baru.regis_status = false;
-    staff_baru.employed_status = false;
+    bool input_valid = true;
 
     json j;
     ifstream fileIn(FILE_STAFF);
@@ -43,22 +35,63 @@ void staff_regis()
 
     if (j.size() >= 10)
     {
-        cout << "\n[ERROR] Registrasi Ditolak!!! Kuota Staff Tambak Lele FULL" << endl;
+        cout << "\n[INFO] Kuota Staff Tambak Lele Sudah FULL!!!" << endl;
         system("pause");
         system("cls");
         return;
     }
 
-    for (const auto &item : j)
-    {
-        if (item["nama"] == staff_baru.username)
-        {
-            cout << "[ERROR] Username Sudah Terdaftar!!! Silakan Gunakan Username Lain!!!" << endl;
-            system("pause");
-            system("cls");
-            return;
-        }
+    system("cls");
+    cout << "============================" << endl;
+    cout << "===== REGISTRASI STAFF =====" << endl;
+    cout << "============================" << endl;
+    while(input_valid){
+        try{
+            cout << "Masukkan Username: ";
+            getline(cin >> ws, staff_baru.username);
+                if(staff_baru.username.length() < 1){
+                    throw invalid_argument("Username Tidak Boleh Kosong!!!");
+                }
+    
+                for(char huruf : staff_baru.username){
+                    if (!isalpha(huruf)) {
+                        throw invalid_argument("Username Hanya Boleh Berupa Huruf Saja!!!");
+                    }
+                }
+
+                for(const auto &item : j){
+                    if (item["nama"] == staff_baru.username){
+                        throw invalid_argument("Username Name Sudah Digunakan!!!");
+                    }
+                }
+    
+                cout << "Masukkan Password: ";
+                getline(cin >> ws, staff_baru.password);
+                if(staff_baru.password.length() < 1){
+                    throw invalid_argument("Password Tidak Boleh Kosong!!!");
+                }
+
+                for(char c : staff_baru.password){
+                    if(isspace(c)){ 
+                        throw invalid_argument("Password TIDAK BOLEH Mengandung SPASI!!!");
+                    }
+                }
+    
+                input_valid = false; 
+            } 
+            catch (const exception& e) {
+                cout << "[ERROR] " << e.what() << endl;
+                cout << "Silakan Coba Lagi!\n" << endl;
+                system("pause");
+                system("cls");
+
+                cout << "============================" << endl;
+                cout << "===== REGISTRASI STAFF =====" << endl;
+                cout << "============================" << endl;
+            }
     }
+    staff_baru.regis_status = false;
+    staff_baru.employed_status = false;
 
     if (j.empty())
     {
@@ -89,13 +122,33 @@ void staff_regis()
 bool status_regis()
 {
     string cek_username;
+    bool cek_regis = true;
 
     system("cls");
     cout << "=================================" << endl;
     cout << "===== CEK STATUS REGISTRASI =====" << endl;
     cout << "=================================" << endl;
-    cout << "Masukkan Username: ";
-    cin >> cek_username;
+    while(cek_regis) {
+        try{
+            cout << "Masukkan Username: ";
+            getline(cin >> ws, cek_username);
+
+            if(cek_username.length() < 1){
+                throw invalid_argument("Input Username Tidak Boleh Kosong!!!");
+            } 
+
+            for(char c : cek_username){
+                if(!isalpha(c)){
+                    throw invalid_argument("Input Username Hanya Boleh Huruf!!!");
+                } 
+            }
+            
+            cek_regis = false;
+        } 
+        catch (const exception& e){
+            cout << "[ERROR] " << e.what() << endl;
+        }
+    }
 
     json j;
     ifstream fileIn(FILE_STAFF);
@@ -148,9 +201,9 @@ bool login_staff()
         cout << "===== LOGIN STAFF =====" << endl;
         cout << "=======================" << endl;
         cout << "Username : ";
-        cin >> log_username;
+        getline(cin >> ws, log_username);
         cout << "Password : ";
-        cin >> log_pass;
+        getline(cin >> ws, log_pass);
 
         json j;
         ifstream fileIn(FILE_STAFF);
@@ -222,7 +275,8 @@ bool login_staff()
 
 void menu_staff()
 {
-    int pilihan;
+    int pilihan = 0;
+    string pilihan_menu;
     bool staff_menu = true;
 
     while (staff_menu)
@@ -237,7 +291,14 @@ void menu_staff()
         cout << "3. Catat Kolam Siap Panen" << endl;
         cout << "4. Keluar" << endl;
         cout << "Pilihan: ";
-        cin >> pilihan;
+        getline(cin >> ws, pilihan_menu);
+
+        try{
+            pilihan = stoi(pilihan_menu);
+        }
+        catch(const exception& e){
+            pilihan = 0;
+        }
 
         switch (pilihan)
         {
