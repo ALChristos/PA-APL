@@ -13,13 +13,13 @@ using json = nlohmann::json;
 const string FILE_PAKAN = "../Data_json/Data_pakan.json";
 
 // ============================================================
-// STRUCT PAKAN 
+// STRUCT PAKAN
 // ============================================================
 struct Pakan
 {
     int id_pakan;
     string nama_pakan;
-    int stok_kg;        // stok total dalam kg
+    int stok_kg; // stok total dalam kg
     int harga_per_kg;
 };
 
@@ -34,7 +34,7 @@ struct JatahPakan
 // ============================================================
 // HELPER: Simpan data pakan ke JSON
 // ============================================================
-static void simpanDataPakan(const json& j)
+static void simpanDataPakan(const json &j)
 {
     ofstream fileOut(FILE_PAKAN);
     if (fileOut.is_open())
@@ -96,7 +96,7 @@ static void lihatStokPakan()
     printf("%-5s %-20s %-12s %-15s\n", "ID", "Nama Pakan", "Stok (Kg)", "Harga/Kg (Rp)");
     cout << "------------------------------------------------------------" << endl;
 
-    for (const auto& item : j)
+    for (const auto &item : j)
     {
         printf("%-5d %-20s %-12d %-15d\n",
                item["id_pakan"].get<int>(),
@@ -151,7 +151,7 @@ static void tambahStokPakan()
         }
 
         // Cek duplikat nama
-        for (const auto& item : j)
+        for (const auto &item : j)
         {
             if (item["nama_pakan"].get<string>() == pakan_baru.nama_pakan)
             {
@@ -165,11 +165,10 @@ static void tambahStokPakan()
         pakan_baru.id_pakan = j.empty() ? 1 : j.back()["id_pakan"].get<int>() + 1;
 
         json pakanJson = {
-            {"id_pakan",     pakan_baru.id_pakan},
-            {"nama_pakan",   pakan_baru.nama_pakan},
-            {"stok_kg",      pakan_baru.stok_kg},
-            {"harga_per_kg", pakan_baru.harga_per_kg}
-        };
+            {"id_pakan", pakan_baru.id_pakan},
+            {"nama_pakan", pakan_baru.nama_pakan},
+            {"stok_kg", pakan_baru.stok_kg},
+            {"harga_per_kg", pakan_baru.harga_per_kg}};
         j.push_back(pakanJson);
         simpanDataPakan(j);
 
@@ -205,7 +204,7 @@ static void tambahStokPakan()
         }
 
         bool ditemukan = false;
-        for (auto& item : j)
+        for (auto &item : j)
         {
             if (item["id_pakan"].get<int>() == id_target)
             {
@@ -238,7 +237,7 @@ static void tambahStokPakan()
 // ============================================================
 // 3. SET JATAH PAKAN PER KOLAM
 // ============================================================
-static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
+static void setJatahPakan(Kolam *daftarKolam, int jumlahKolam)
 {
     system("cls");
     cout << "========================================" << endl;
@@ -254,7 +253,7 @@ static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
     bool adaKolamAktif = false;
     for (int i = 0; i < jumlahKolam; i++)
     {
-        if (daftarKolam[i].status_kolam == true)
+        if (daftarKolam[i].status_kolam == "Terisi")
         {
             printf("%-5d %-12s %-15d\n",
                    daftarKolam[i].id_kolam,
@@ -291,7 +290,7 @@ static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
     bool kolamValid = false;
     for (int i = 0; i < jumlahKolam; i++)
     {
-        if (daftarKolam[i].id_kolam == id_kolam_target && daftarKolam[i].status_kolam == true)
+        if (daftarKolam[i].id_kolam == id_kolam_target && daftarKolam[i].status_kolam == "Terisi")
         {
             kolamValid = true;
             break;
@@ -309,7 +308,7 @@ static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
     // Tampilkan daftar pakan
     cout << "\nDaftar Pakan Tersedia:" << endl;
     cout << "------------------------------" << endl;
-    for (const auto& item : j)
+    for (const auto &item : j)
     {
         printf("  [%d] %s (Stok: %d Kg)\n",
                item["id_pakan"].get<int>(),
@@ -334,7 +333,7 @@ static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
     }
 
     string nama_pakan_dipilih = "";
-    for (const auto& item : j)
+    for (const auto &item : j)
     {
         if (item["id_pakan"].get<int>() == id_pakan_target)
         {
@@ -366,12 +365,12 @@ static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
 
     // Update jika sudah ada, tambah baru jika belum
     bool sudahAda = false;
-    for (auto& item : jJatah)
+    for (auto &item : jJatah)
     {
         if (item["id_kolam"].get<int>() == id_kolam_target)
         {
             item["jatah_per_hari_gram"] = jatah_gram;
-            item["nama_pakan"]          = nama_pakan_dipilih;
+            item["nama_pakan"] = nama_pakan_dipilih;
             sudahAda = true;
             break;
         }
@@ -380,10 +379,9 @@ static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
     if (!sudahAda)
     {
         json jatahBaru = {
-            {"id_kolam",             id_kolam_target},
-            {"jatah_per_hari_gram",  jatah_gram},
-            {"nama_pakan",           nama_pakan_dipilih}
-        };
+            {"id_kolam", id_kolam_target},
+            {"jatah_per_hari_gram", jatah_gram},
+            {"nama_pakan", nama_pakan_dipilih}};
         jJatah.push_back(jatahBaru);
     }
 
@@ -402,7 +400,7 @@ static void setJatahPakan(Kolam* daftarKolam, int jumlahKolam)
 // ============================================================
 // 4. CATAT PEMBERIAN PAKAN (kurangi stok)
 // ============================================================
-static void catatPemberianPakan(Kolam* daftarKolam, int jumlahKolam, Staff* daftarStaff, int& id_staff)
+static void catatPemberianPakan(Kolam *daftarKolam, int jumlahKolam, Staff *daftarStaff, int &id_staff)
 {
     system("cls");
     cout << "========================================" << endl;
@@ -433,7 +431,7 @@ static void catatPemberianPakan(Kolam* daftarKolam, int jumlahKolam, Staff* daft
     cout << "----------------------------------------------------" << endl;
     printf("%-10s %-20s %-15s\n", "ID Kolam", "Nama Pakan", "Jatah/Hari");
     cout << "----------------------------------------------------" << endl;
-    for (const auto& item : jJatah)
+    for (const auto &item : jJatah)
     {
         printf("%-10d %-20s %-15d gram\n",
                item["id_kolam"].get<int>(),
@@ -448,17 +446,17 @@ static void catatPemberianPakan(Kolam* daftarKolam, int jumlahKolam, Staff* daft
     cin.ignore();
 
     // Cari jatah kolam yang dipilih
-    int jatah_gram     = 0;
-    string nama_pakan  = "";
+    int jatah_gram = 0;
+    string nama_pakan = "";
     bool jatahDitemukan = false;
 
-    for (const auto& item : jJatah)
+    for (const auto &item : jJatah)
     {
         if (item["id_kolam"].get<int>() == id_kolam_target)
         {
-            jatah_gram      = item["jatah_per_hari_gram"].get<int>();
-            nama_pakan      = item["nama_pakan"].get<string>();
-            jatahDitemukan  = true;
+            jatah_gram = item["jatah_per_hari_gram"].get<int>();
+            nama_pakan = item["nama_pakan"].get<string>();
+            jatahDitemukan = true;
             break;
         }
     }
@@ -475,7 +473,7 @@ static void catatPemberianPakan(Kolam* daftarKolam, int jumlahKolam, Staff* daft
     json jPakan = loadDataPakan();
     bool stokCukup = false;
 
-    for (auto& item : jPakan)
+    for (auto &item : jPakan)
     {
         if (item["nama_pakan"].get<string>() == nama_pakan)
         {
@@ -530,7 +528,7 @@ static void catatPemberianPakan(Kolam* daftarKolam, int jumlahKolam, Staff* daft
 // ============================================================
 // MENU UTAMA KELOLA PAKAN
 // ============================================================
-void kelolaPakan(Kolam* daftarKolam, int jumlahKolam, Staff* daftarStaff, int& id_staff)
+void kelolaPakan(Kolam *daftarKolam, int jumlahKolam, Staff *daftarStaff, int &id_staff)
 {
     int pilihan;
     bool menu_aktif = true;
@@ -551,32 +549,32 @@ void kelolaPakan(Kolam* daftarKolam, int jumlahKolam, Staff* daftarStaff, int& i
 
         switch (pilihan)
         {
-            case 1:
-                lihatStokPakan();
-                break;
+        case 1:
+            lihatStokPakan();
+            break;
 
-            case 2:
-                tambahStokPakan();
-                break;
+        case 2:
+            tambahStokPakan();
+            break;
 
-            case 3:
-                setJatahPakan(daftarKolam, jumlahKolam);
-                break;
+        case 3:
+            setJatahPakan(daftarKolam, jumlahKolam);
+            break;
 
-            case 4:
-                catatPemberianPakan(daftarKolam, jumlahKolam, daftarStaff, id_staff);
-                break;
+        case 4:
+            catatPemberianPakan(daftarKolam, jumlahKolam, daftarStaff, id_staff);
+            break;
 
-            case 5:
-                menu_aktif = false;
-                system("cls");
-                break;
+        case 5:
+            menu_aktif = false;
+            system("cls");
+            break;
 
-            default:
-                cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
-                system("pause");
-                system("cls");
-                break;
+        default:
+            cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+            system("pause");
+            system("cls");
+            break;
         }
     }
 }
