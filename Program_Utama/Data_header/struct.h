@@ -6,10 +6,11 @@ using namespace std;
 struct Kolam
 {
     int id_kolam;
-    string status_kolam; 
+    string status_kolam;
     string tipe_kolam;
     int populasi_ikan;
     int kapasitas;
+    int totalHargaBenih;
 };
 
 struct Staff
@@ -34,11 +35,11 @@ struct Balance
     int total_keuntungan;
 };
 
-struct Keuangan 
+struct Keuangan
 {
     int id_transaksi;
     double pengeluaran;
-    double untung_bersih; 
+    double untung_bersih;
     string keterangan;
 };
 
