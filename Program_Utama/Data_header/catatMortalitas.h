@@ -15,7 +15,7 @@ void catatMortalitas(Kolam *daftarKolam, Staff *daftarStaff, int &id_staff)
     cin >> indexKolam;
     cin.ignore();
 
-    if (daftarKolam[indexKolam].status_kolam == 1)
+    if (daftarKolam[indexKolam].status_kolam == "Terisi")
     {
         int totalMati;
         cout << "Input Jumlah Ikan yang Mati: ";
