@@ -14,6 +14,44 @@ const string FILE_STAFF = "Data_json/Data_staff.json";
 const string FILE_KOLAM = "Data_json/Data_kolam.json";
 const string FILE_KEUANGAN = "Data_json/Laporan_keuangan.json";
 
+void lihat_staff(){
+    json j;
+    ifstream fileIn(FILE_STAFF);
+
+    if(fileIn.is_open()) 
+    {
+        fileIn >> j;
+        fileIn.close();
+    }
+
+    if(j.empty()){
+        cout << "[INFO] Belum Ada Staff Di Database!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+
+    system("cls");
+    cout << "=======================================================" << endl;
+    cout << "============== DAFTAR STAFF SELURUH STAFF =============" << endl;
+    cout << "=======================================================" << endl;
+    cout << "ID\t| Username\t| Status\t|" << endl;
+    cout << "------------------------------------------------------" << endl;
+
+    for(const auto& item : j)
+    {
+        if (item["status_terima"] == true) {
+            cout << item["id"] << "\t|" << item["nama"] << "\t| Menunggu\t |" << endl;
+            cout << "------------------------------------------------------" << endl;
+        }
+    }
+
+    system("pause");
+    system("cls");
+    return;
+}
+
+
 void acc_staff()
 {
     json j;
@@ -118,7 +156,7 @@ void acc_staff()
     system("cls");
 }
 
-void pecat_staff() {
+void pecat_staff(){
     json j;
     ifstream fileIn(FILE_STAFF);
 
@@ -219,6 +257,39 @@ void pecat_staff() {
     system("cls");
 }
 
+void lihat_kolam(){
+    json j;
+    ifstream fileIn(FILE_KOLAM);
+
+    if(fileIn.is_open()){
+        fileIn >> j;
+        fileIn.close();
+    }
+
+     if(j.empty()){
+        cout << "[INFO] Belum Ada Kolam Yang Dibuat!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+
+    system("cls");
+    cout << "================================================================" << endl;
+    cout << "================ DAFTAR KOLAM KOSONG ===========================" << endl;
+    cout << "================================================================" << endl;
+    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+    cout << "----------------------------------------------------------------" << endl;
+    
+    for(const auto& item : j){
+        if(item["status_kolam"] == "Kosong"){
+            cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+            cout << "----------------------------------------------------------------" << endl;
+        }
+    }
+    system("pause");
+    system("cls");
+    return;
+}
 
 void buat_kolam(){
     Kolam kolam;

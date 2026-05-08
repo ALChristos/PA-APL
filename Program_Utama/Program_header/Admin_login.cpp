@@ -123,8 +123,9 @@ void menu_admin()
                 cout << "===== MENU KEOLA KOLAM =====" << endl;
                 cout << "============================" << endl;
                 cout << "1. Buat Kolam" << endl;
-                cout << "2. Bongkar / Hapus Kolam" << endl;
-                cout << "3. Keluar" << endl;
+                cout << "2. Lihat Kolam" << endl;
+                cout << "3. Bongkar / Hapus Kolam" << endl;
+                cout << "4. Keluar" << endl;
                 cout << "Masukan Pilihan: ";
                 getline(cin >> ws, pilihan_menu);
 
@@ -139,12 +140,16 @@ void menu_admin()
                     case 1:
                         buat_kolam();
                         break;
-    
+
                     case 2:
-                        bongkar_kolam();
+                        lihat_kolam();
                         break;
     
                     case 3:
+                        bongkar_kolam();
+                        break;
+    
+                    case 4:
                         system("cls");
                         loop = false;
                         break;
@@ -168,8 +173,9 @@ void menu_admin()
                 cout << "===== MENU KEOLA STAFF =====" << endl;
                 cout << "============================" << endl;
                 cout << "1. Pecat Staff" << endl;
-                cout << "2. ACC Staff" << endl;
-                cout << "3. Keluar" << endl;
+                cout << "2. Lihat Staff" << endl;
+                cout << "3. ACC Staff" << endl;
+                cout << "4. Keluar" << endl;
                 cout << "Masukan Pilihan: ";
                 getline(cin >> ws, pilihan_menu);
 
@@ -184,12 +190,16 @@ void menu_admin()
                     case 1:
                         pecat_staff();
                         break;
-    
+
                     case 2:
-                        acc_staff();
+                        lihat_staff();
                         break;
     
                     case 3:
+                        acc_staff();
+                        break;
+    
+                    case 4:
                         system("cls");
                         loop = false;
                         break;

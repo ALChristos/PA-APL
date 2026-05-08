@@ -33,7 +33,14 @@ void staff_regis()
         j = json::array();
     }
 
-    if (j.size() >= 10)
+    int staff_aktif = 0;
+    for(const auto& item : j){
+        if (item["status_terima"] == true && item["status_kerja"] == true) {
+            staff_aktif++;
+        }
+    }
+
+    if(staff_aktif >= 10)
     {
         cout << "\n[INFO] Kuota Staff Tambak Lele Sudah FULL!!!" << endl;
         system("pause");
