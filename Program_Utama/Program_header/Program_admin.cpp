@@ -14,17 +14,19 @@ const string FILE_STAFF = "Data_json/Data_staff.json";
 const string FILE_KOLAM = "Data_json/Data_kolam.json";
 const string FILE_KEUANGAN = "Data_json/Laporan_keuangan.json";
 
-void lihat_staff(){
+void lihat_staff()
+{
     json j;
     ifstream fileIn(FILE_STAFF);
 
-    if(fileIn.is_open()) 
+    if (fileIn.is_open())
     {
         fileIn >> j;
         fileIn.close();
     }
 
-    if(j.empty()){
+    if (j.empty())
+    {
         cout << "[INFO] Belum Ada Staff Di Database!!!" << endl;
         system("pause");
         system("cls");
@@ -38,9 +40,10 @@ void lihat_staff(){
     cout << "ID\t| Username\t| Status\t|" << endl;
     cout << "------------------------------------------------------" << endl;
 
-    for(const auto& item : j)
+    for (const auto &item : j)
     {
-        if (item["status_terima"] == true) {
+        if (item["status_terima"] == true)
+        {
             cout << item["id"] << "\t|" << item["nama"] << "\t| Aktif Bekerja\t |" << endl;
             cout << "------------------------------------------------------" << endl;
         }
@@ -50,7 +53,6 @@ void lihat_staff(){
     system("cls");
     return;
 }
-
 
 void acc_staff()
 {
@@ -72,13 +74,16 @@ void acc_staff()
     }
 
     int staff_aktif = 0;
-    for (const auto &item : j) {
-        if (item["status_terima"] == true && item["status_kerja"] == true) {
+    for (const auto &item : j)
+    {
+        if (item["status_terima"] == true && item["status_kerja"] == true)
+        {
             staff_aktif++;
         }
     }
 
-    if (staff_aktif >= 10) {
+    if (staff_aktif >= 10)
+    {
         cout << "[INFO] Kuota Karyawan Sudah Penuh (10/10)!!!" << endl;
         cout << "Tidak Bisa ACC Staff Baru Sebelum Ada Yang Di-PHK!!!" << endl;
         system("pause");
@@ -297,16 +302,19 @@ void pecat_staff()
     system("cls");
 }
 
-void lihat_kolam(){
+void lihat_kolam()
+{
     json j;
     ifstream fileIn(FILE_KOLAM);
 
-    if(fileIn.is_open()){
+    if (fileIn.is_open())
+    {
         fileIn >> j;
         fileIn.close();
     }
 
-     if(j.empty()){
+    if (j.empty())
+    {
         cout << "[INFO] Belum Ada Kolam Yang Dibuat!!!" << endl;
         system("pause");
         system("cls");
@@ -319,9 +327,11 @@ void lihat_kolam(){
     cout << "================================================================" << endl;
     cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
     cout << "----------------------------------------------------------------" << endl;
-    
-    for(const auto& item : j){
-        if(item["status_kolam"] == "Kosong"){
+
+    for (const auto &item : j)
+    {
+        if (item["status_kolam"] == "Kosong")
+        {
             cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
             cout << "----------------------------------------------------------------" << endl;
         }
@@ -368,7 +378,8 @@ void buat_kolam()
 
     kolam.status_kolam = "Kosong";
     kolam.populasi_ikan = 0;
-    kolam.totalHargaBenih = 0;
+    kolam.total_harga_benih = 0;
+    kolam.total_mati = 0;
 
     for (char &huruf : kolam.tipe_kolam)
     {
@@ -410,7 +421,8 @@ void buat_kolam()
         {"kapasitas", kolam.kapasitas},
         {"populasi", kolam.populasi_ikan},
         {"status_kolam", kolam.status_kolam},
-        {"hargaBenih", kolam.totalHargaBenih}};
+        {"total_harga_benih", kolam.total_harga_benih},
+        {"total_mati", kolam.total_harga_benih}};
 
     j.push_back(kolamjson);
 
@@ -471,7 +483,7 @@ void bongkar_kolam()
     int id_pilihan = -1;
     string input_id;
 
-    while(true)
+    while (true)
     {
         try
         {
@@ -544,12 +556,14 @@ void tebar_benih()
     json j;
     ifstream fileIn(FILE_KOLAM);
 
-    if (fileIn.is_open()) {
+    if (fileIn.is_open())
+    {
         fileIn >> j;
         fileIn.close();
     }
 
-    if (j.empty()) {
+    if (j.empty())
+    {
         cout << "[INFO] Belum Ada Kolam Yang Dibuat!!!" << endl;
         system("pause");
         system("cls");
@@ -564,73 +578,85 @@ void tebar_benih()
     cout << "----------------------------------------------------------------" << endl;
 
     bool kolam_kosong = false;
-    for (const auto &item : j) {
-        if (item["status_kolam"] == "Kosong") {
+    for (const auto &item : j)
+    {
+        if (item["status_kolam"] == "Kosong")
+        {
             cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
             cout << "----------------------------------------------------------------" << endl;
             kolam_kosong = true;
         }
     }
 
-    if (!kolam_kosong) {
+    if (!kolam_kosong)
+    {
         cout << "\n[INFO] Tidak Ada Kolam Kosong Saat Ini. Silahkan Bongkar/Buat Kolam Baru!" << endl;
         system("pause");
         system("cls");
-        return; 
+        return;
     }
 
     int id_kolam = -1;
     string input_pilihan;
 
-    while(true) {
-        try {
+    while (true)
+    {
+        try
+        {
             cout << "\nMasukkan ID Kolam Yang Ingin Di Tebar Benih (0 untuk batal): ";
             getline(cin >> ws, input_pilihan);
             id_kolam = stoi(input_pilihan);
 
-            if (id_kolam == 0) {
+            if (id_kolam == 0)
+            {
                 system("cls");
-                return; 
+                return;
             }
-            break; 
+            break;
         }
-        catch (const exception &e) {
+        catch (const exception &e)
+        {
             cout << "[ERROR] ID Tidak Valid! Masukkan Angka." << endl;
         }
     }
-    
+
     bool ditemukan = false;
     string jumlah, harga;
     int jumlahBenih, hargaBenih, totalHargaBenih;
 
-    for (auto &item : j) {
-        if (item["id"] == id_kolam && item["status_kolam"] == "Kosong") {
+    for (auto &item : j)
+    {
+        if (item["id"] == id_kolam && item["status_kolam"] == "Kosong")
+        {
             ditemukan = true;
             bool input_sukses = true;
 
-            while(input_sukses){
-                try {
+            while (input_sukses)
+            {
+                try
+                {
                     cout << "Input Jumlah Benih yang ingin anda Tebar (gram): ";
                     getline(cin >> ws, jumlah);
 
                     jumlahBenih = stoi(jumlah);
 
-                    if (jumlahBenih <= 0){
+                    if (jumlahBenih <= 0)
+                    {
                         cout << "[ERROR] Jumlah Benih Harus Lebih Dari 0!!!" << endl;
                         continue;
                     }
 
-                    if (jumlahBenih > item["kapasitas"]) {
-                        cout << "[ERROR] Jumlah Benih melebihi Kapasitas Kolam (" << item["kapasitas"] << ")!" << endl;
-                        continue; 
+                    if (jumlahBenih > item["kapasitas"])
+                    {
                     }
-                    
+
                     cout << "Input Harga Benih (Rp/Gram): ";
                     getline(cin >> ws, harga);
 
                     hargaBenih = stoi(harga);
 
-                    if (hargaBenih <= 0) {
+                    if (hargaBenih <= 0)
+                    {
                         cout << "[ERROR] Harga Benih Harus Lebih Dari 0!!!" << endl;
                         continue;
                     }
@@ -639,24 +665,27 @@ void tebar_benih()
                     item["hargaBenih"] = totalHargaBenih;
                     item["status_kolam"] = "Terisi";
                     item["populasi"] = jumlahBenih;
-                    
-                    input_sukses = false; 
+
+                    input_sukses = false;
                 }
-                catch(const exception& e) {
+                catch (const exception &e)
+                {
                     cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
                 }
             }
-            break; 
+            break;
         }
     }
 
-    if(ditemukan){
+    if (ditemukan)
+    {
         ofstream fileOut(FILE_KOLAM);
         fileOut << j.dump(4);
         fileOut.close();
         cout << "\n[BERHASIL] Kolam Dengan ID " << id_kolam << " Telah Di Tebar Benih!!!" << endl;
-    } 
-    else{
+    }
+    else
+    {
         cout << "\n[ERROR] ID Kolam Tidak Ditemukan atau Kolam Sudah Terisi!!!" << endl;
     }
 
