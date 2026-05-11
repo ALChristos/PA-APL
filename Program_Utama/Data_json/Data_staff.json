@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "nama": "Jopjop",
+        "pass": "123",
+        "status_kerja": true,
+        "status_terima": true
+    },
+    {
+        "id": 2,
+        "nama": "popol",
+        "pass": "popol",
+        "status_kerja": false,
+        "status_terima": false
+    }
+]

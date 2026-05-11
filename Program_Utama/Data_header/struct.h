@@ -8,9 +8,10 @@ struct Kolam
     int id_kolam;
     string status_kolam;
     string tipe_kolam;
-    int populasi_ikan;
     int kapasitas;
-    int totalHargaBenih;
+    int populasi_ikan;
+    int total_mati;
+    int total_harga_benih;
 };
 
 struct Staff

@@ -153,10 +153,12 @@ void menu_admin()
                     break;
 
                 case 3:
+                    bongkar_kolam();
+
+                case 4:
                     system("cls");
                     loop = false;
                     break;
-
                 default:
                     cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
                     system("pause");

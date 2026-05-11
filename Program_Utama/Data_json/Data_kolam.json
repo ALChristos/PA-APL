@@ -1,0 +1,12 @@
+[
+    {
+        "hargaBenih": 3000000,
+        "id": 1,
+        "kapasitas": 3000,
+        "populasi": 2910,
+        "status_kolam": "Terisi",
+        "tipe": "besar",
+        "total_harga_benih": 0,
+        "total_mati": 0
+    }
+]

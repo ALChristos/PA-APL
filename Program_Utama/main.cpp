@@ -22,10 +22,12 @@ int main()
         cout << "Masukan Pilihan: ";
         getline(cin >> ws, pilihan);
 
-        try{
+        try
+        {
             input_pilihan = stoi(pilihan);
         }
-        catch(const exception& e){
+        catch (const exception &e)
+        {
             input_pilihan = 0;
         }
 
@@ -63,10 +65,12 @@ int main()
                 cout << "Masukan Pilihan: ";
                 getline(cin >> ws, pilihan);
 
-                try{
+                try
+                {
                     input_pilihan = stoi(pilihan);
                 }
-                catch(const exception& e){
+                catch (const exception &e)
+                {
                     input_pilihan = 0;
                 }
 
@@ -74,11 +78,11 @@ int main()
                 {
                 case 1:
                 {
-                    bool log_staff = login_staff();
+                    int log_staff = login_staff();
 
-                    if (log_staff == true)
+                    if (log_staff != 0)
                     {
-                        menu_staff();
+                        menu_staff(log_staff);
                     }
 
                     break;
@@ -92,7 +96,8 @@ int main()
                     int pilihan_regis = 0;
                     bool loop = true;
 
-                    while(loop){
+                    while (loop)
+                    {
                         cout << "=============================" << endl;
                         cout << "=== MENU REGISTRASI STAFF ===" << endl;
                         cout << "=============================" << endl;
@@ -101,11 +106,13 @@ int main()
                         cout << "3. Keluar Menu Registras Staff" << endl;
                         cout << "Masukan Pilihan: ";
                         getline(cin >> ws, pil_regis);
-                        
-                        try{
+
+                        try
+                        {
                             pilihan_regis = stoi(pil_regis);
                         }
-                        catch(const exception& e){
+                        catch (const exception &e)
+                        {
                             pilihan_regis = 0;
                         }
 
@@ -114,16 +121,16 @@ int main()
                         case 1:
                             staff_regis();
                             break;
-    
+
                         case 2:
                             status_regis();
                             break;
-    
+
                         case 3:
                             system("cls");
                             loop = false;
                             break;
-    
+
                         default:
                             cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
                             system("pause");

@@ -7,7 +7,7 @@ using namespace std;
 
 void staff_regis();
 bool status_regis();
-bool login_staff();
-void menu_staff();
+int login_staff();
+void menu_staff(int &id_staff);
 
 #endif
