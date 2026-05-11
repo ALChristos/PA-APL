@@ -100,8 +100,9 @@ void menu_admin()
         cout << "2. Kelola Staff" << endl;
         cout << "3. Tebar Benih Ikan" << endl;
         cout << "4. Kelola Pakan Ikan" << endl;
-        cout << "5. Cek Laporan" << endl;
-        cout << "6. Keluar" << endl;
+        cout << "5. Jual Ikan" << endl;
+        cout << "6. Cek Laporan" << endl;
+        cout << "7. Keluar" << endl;
         cout << "Masukan Pilihan: ";
         getline(cin >> ws, pilihan_menu);
 
@@ -149,10 +150,14 @@ void menu_admin()
                     break;
 
                 case 2:
-                    bongkar_kolam();
+                    lihat_kolam();
                     break;
 
                 case 3:
+                    bongkar_kolam();
+                    break;
+
+                case 4:
                     system("cls");
                     loop = false;
                     break;
@@ -200,10 +205,14 @@ void menu_admin()
                     break;
 
                 case 2:
-                    acc_staff();
+                    lihat_staff();
                     break;
 
                 case 3:
+                    acc_staff();
+                    break;
+
+                case 4:
                     system("cls");
                     loop = false;
                     break;
@@ -225,9 +234,13 @@ void menu_admin()
             break;
 
         case 5:
+            jual_ikan();
             break;
 
         case 6:
+            break;
+
+        case 7:
             admin_menu = false;
             system("cls");
             break;

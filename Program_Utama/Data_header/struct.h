@@ -8,9 +8,10 @@ struct Kolam
     int id_kolam;
     string status_kolam;
     string tipe_kolam;
-    int populasi_ikan;
     int kapasitas;
-    int totalHargaBenih;
+    int populasi_ikan;
+    int total_mati;
+    int total_harga_benih;
 };
 
 struct Staff
@@ -20,6 +21,7 @@ struct Staff
     string password;
     bool regis_status;
     bool employed_status;
+    double saldo;
 };
 
 struct Admin

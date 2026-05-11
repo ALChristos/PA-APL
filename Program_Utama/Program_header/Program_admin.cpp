@@ -13,44 +13,200 @@ using json = nlohmann::json;
 const string FILE_STAFF = "Data_json/Data_staff.json";
 const string FILE_KOLAM = "Data_json/Data_kolam.json";
 const string FILE_KEUANGAN = "Data_json/Laporan_keuangan.json";
+const string FILE_REKBER = "Data_json/Rekber_admin.json";
 
-void lihat_staff(){
+void lihat_staff(int id){
     json j;
     ifstream fileIn(FILE_STAFF);
 
-    if(fileIn.is_open()) 
+    if (fileIn.is_open())
+    {
+        fileIn >> j;
+        fileIn.close();
+    }
+    
+    bool valid = false;
+
+    cout << "=======================================================" << endl;
+    cout << "============== DAFTAR STAFF BERDASARKAN ID ============" << endl;
+    cout << "=======================================================" << endl;
+    cout << "ID\t| Username\t| Status\t|" << endl;
+    cout << "------------------------------------------------------" << endl;
+
+    for (const auto &item : j)
+    {
+        if (item["id"] == id)
+        {
+            cout << item["id"] << "\t|" << item["nama"] << "\t|" << item["status_kerja"] << "\t|" << endl;
+            cout << "------------------------------------------------------" << endl;
+
+            valid = true;
+        }
+    }
+    
+    if(valid){
+        cout << "\n[SUCCESS] Staff Dengan (ID: " << id << ") Ditemukan!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+    else{
+        cout << "[ERROR] Staff Dengan (ID: " << id << ") Tidak Ditemukan!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+}
+
+void lihat_staff()
+{
+    json j;
+    ifstream fileIn(FILE_STAFF);
+
+    if (fileIn.is_open())
     {
         fileIn >> j;
         fileIn.close();
     }
 
-    if(j.empty()){
+    if (j.empty())
+    {
         cout << "[INFO] Belum Ada Staff Di Database!!!" << endl;
         system("pause");
         system("cls");
         return;
     }
+    
+    string pilihan_menu, input_id;
+    int pilihan, id;
+    bool loop = true;
 
-    system("cls");
-    cout << "=======================================================" << endl;
-    cout << "============== DAFTAR STAFF SELURUH STAFF =============" << endl;
-    cout << "=======================================================" << endl;
-    cout << "ID\t| Username\t| Status\t|" << endl;
-    cout << "------------------------------------------------------" << endl;
-
-    for(const auto& item : j)
+    while(loop)
     {
-        if (item["status_terima"] == true) {
-            cout << item["id"] << "\t|" << item["nama"] << "\t| Aktif Bekerja\t |" << endl;
-            cout << "------------------------------------------------------" << endl;
+        system("cls");
+        cout << "============================" << endl;
+        cout << "===== MENU LIHAT STAFF =====" << endl;
+        cout << "============================" << endl;
+        cout << "1. Lihat Staff Berdasarkan ID Staff" << endl;
+        cout << "2. Lihat Staff Yang Aktif Bekerja" << endl;
+        cout << "3. Lihat Staff Yang Belum Aktif Bekerja" << endl;
+        cout << "4. Keluar" << endl;
+        cout << "Masukan Pilihan: ";
+        getline(cin >> ws, pilihan_menu);
+
+        try
+        {
+            pilihan = stoi(pilihan_menu);
+        }
+        catch (const exception &e)
+        {
+            pilihan = 0;
+        }
+
+        switch (pilihan)
+        {
+            case 1:
+                system("cls");
+
+                while(true){
+                    try{
+                        cout << "Masukan ID Kolam Yang Ingin Di Lihat (Input 0 Untuk Batal): " << endl;
+                        getline(cin >> ws, input_id);
+    
+                        id = stoi(input_id);
+
+                        if(id == 0){
+                            return;
+                            system("cls");
+                        }
+
+                        break;
+                    }
+                    catch (const exception& e){
+                        cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
+                        system("pause");
+                        system("cls");
+                    }
+                }
+
+                lihat_staff(id);
+
+                break;
+
+            case 2:
+                system("cls");
+                cout << "=======================================================" << endl;
+                cout << "================== DAFTAR STAFF AKTIF =================" << endl;
+                cout << "=======================================================" << endl;
+                cout << "ID\t| Username\t| Status\t|" << endl;
+                cout << "------------------------------------------------------" << endl;
+
+                for(int i = 0; i < j.size(); i++){
+                    for(int k = 0; k < j.size() - 1 - i; k++){
+                        if (j[k]["id"] > j[k + 1]["id"]){
+                            swap(j[k], j[k + 1]); 
+                        }
+                    }
+                }
+
+                for (const auto &item : j)
+                {
+                    if (item["status_terima"] == true)
+                    {
+                        cout << item["id"] << "\t|" << item["nama"] << "\t| Aktif Bekerja\t |" << endl;
+                        cout << "------------------------------------------------------" << endl;
+                    }
+                }
+
+                system("pause");
+                system("cls");
+                break;
+
+            case 3:
+                system("cls");
+                cout << "=======================================================" << endl;
+                cout << "=============== DAFTAR STAFF BELUM AKTIF ==============" << endl;
+                cout << "=======================================================" << endl;
+                cout << "ID\t| Username\t| Status\t|" << endl;
+                cout << "------------------------------------------------------" << endl;
+
+                for(int i = 0; i < j.size(); i++){
+                    for(int k = 0; k < j.size() - 1 - i; k++){
+                        if (j[k]["id"] > j[k + 1]["id"]){
+                            swap(j[k], j[k + 1]); 
+                        }
+                    }
+                }
+
+                for (const auto &item : j)
+                {
+                    if (item["status_terima"] == false)
+                    {
+                        cout << item["id"] << "\t|" << item["nama"] << "\t| Tidak Akitf\t |" << endl;
+                        cout << "------------------------------------------------------" << endl;
+                    }
+                }
+
+                system("pause");
+                system("cls");
+                break;
+
+            case 4:
+                loop = false;
+                system("cls");
+                break;
+
+            default:
+                cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                system("pause");
+                break;
         }
     }
-
+   
     system("pause");
     system("cls");
     return;
 }
-
 
 void acc_staff()
 {
@@ -72,13 +228,16 @@ void acc_staff()
     }
 
     int staff_aktif = 0;
-    for (const auto &item : j) {
-        if (item["status_terima"] == true && item["status_kerja"] == true) {
+    for (const auto &item : j)
+    {
+        if (item["status_terima"] == true && item["status_kerja"] == true)
+        {
             staff_aktif++;
         }
     }
 
-    if (staff_aktif >= 10) {
+    if (staff_aktif >= 10)
+    {
         cout << "[INFO] Kuota Karyawan Sudah Penuh (10/10)!!!" << endl;
         cout << "Tidak Bisa ACC Staff Baru Sebelum Ada Yang Di-PHK!!!" << endl;
         system("pause");
@@ -92,6 +251,14 @@ void acc_staff()
     cout << "======================================================" << endl;
     cout << "ID\t| Username\t| Status\t|" << endl;
     cout << "------------------------------------------------------" << endl;
+
+    for(int i = 0; i < j.size(); i++){
+        for(int k = 0; k < j.size() - 1 - i; k++){
+            if (j[k]["id"] > j[k + 1]["id"]){
+                swap(j[k], j[k + 1]); 
+            }
+        }
+    }
 
     bool ada_pending = false;
     for (const auto &item : j)
@@ -209,6 +376,14 @@ void pecat_staff()
     cout << "ID\t| Username\t| Status\t|" << endl;
     cout << "-------------------------------------------------------" << endl;
 
+    for(int i = 0; i < j.size(); i++){
+        for(int k = 0; k < j.size() - 1 - i; k++){
+            if (j[k]["id"] > j[k + 1]["id"]){
+                swap(j[k], j[k + 1]); 
+            }
+        }
+    }
+
     bool ada_aktif = false;
     for (const auto &item : j)
     {
@@ -297,38 +472,272 @@ void pecat_staff()
     system("cls");
 }
 
-void lihat_kolam(){
+void lihat_kolam(int id){
     json j;
     ifstream fileIn(FILE_KOLAM);
 
-    if(fileIn.is_open()){
+    if (fileIn.is_open())
+    {
+        fileIn >> j;
+        fileIn.close();
+    }
+    
+    bool valid = false;
+
+    cout << "================================================================" << endl;
+    cout << "================= DAFTAR KOLAM BERDASARKAN ID ==================" << endl;
+    cout << "================================================================" << endl;
+    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+    cout << "----------------------------------------------------------------" << endl;
+
+    for (const auto &item : j)
+    {
+        if(item["id"] == id){
+            cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+            cout << "----------------------------------------------------------------" << endl;
+
+            valid = true;
+        }
+    }
+    
+    if(valid){
+        cout << "\n[SUCCESS] Kolam Dengan (ID: " << id << ") Ditemukan!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+    else{
+        cout << "\n[ERROR] Kolam Dengan (ID: " << id << ") Tidak Ditemukan!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+}
+
+void lihat_kolam()
+{
+    json j;
+    ifstream fileIn(FILE_KOLAM);
+
+    if (fileIn.is_open())
+    {
         fileIn >> j;
         fileIn.close();
     }
 
-     if(j.empty()){
+    if (j.empty())
+    {
         cout << "[INFO] Belum Ada Kolam Yang Dibuat!!!" << endl;
         system("pause");
         system("cls");
         return;
     }
 
-    system("cls");
-    cout << "================================================================" << endl;
-    cout << "================ DAFTAR KOLAM KOSONG ===========================" << endl;
-    cout << "================================================================" << endl;
-    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
-    cout << "----------------------------------------------------------------" << endl;
+    bool loop = true;
+    string pilihan_menu, input_id, input_tipe, input_status;
+    int pilihan, id;
+
+    while(loop)
+    {
+        system("cls");
+        cout << "============================" << endl;
+        cout << "===== MENU LIHAT KOLAM =====" << endl;
+        cout << "============================" << endl;
+        cout << "1. Lihat Seluruh Kolam" << endl;
+        cout << "2. Lihat Kolam Berdasarkan ID Kolam" << endl;
+        cout << "3. Lihat Kolam Berdasarkan Tipe Kolam" << endl;
+        cout << "4. Lihat Kolam Berdasarkan Status Kolam" << endl;
+        cout << "5. Keluar" << endl;
+        cout << "Masukan Pilihan: ";
+        getline(cin >> ws, pilihan_menu);
+
+        try
+        {
+            pilihan = stoi(pilihan_menu);
+        }
+        catch (const exception &e)
+        {
+            pilihan = 0;
+        }
+
+        switch (pilihan)
+        {
+            case 1:
+                system("cls");
+
+                for(int i = 0; i < j.size(); i++){
+                    for(int k = 0; k < j.size() - 1 - i; k++){
+                        if (j[k]["id"] > j[k + 1]["id"]){
+                            swap(j[k], j[k + 1]); 
+                        }
+                    }
+                }
+
+                cout << "================================================================" << endl;
+                cout << "================ DAFTAR KOLAM SELURUH KOLAM ====================" << endl;
+                cout << "================================================================" << endl;
+                cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+                cout << "----------------------------------------------------------------" << endl;
+
+                for (const auto &item : j)
+                {
+                    cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+                    cout << "----------------------------------------------------------------" << endl;
+                }
+                system("pause");
+                system("cls");
+                break;
+
+            case 2:{
+                system("cls");
+
+                while(true){
+                    try{
+                        cout << "Masukan ID Kolam Yang Ingin Di Lihat: ";
+                        getline(cin >> ws, input_id);
     
-    for(const auto& item : j){
-        if(item["status_kolam"] == "Kosong"){
-            cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
-            cout << "----------------------------------------------------------------" << endl;
+                        id = stoi(input_id);
+
+                        if(id == 0){
+                            system("cls");
+                            return;
+                        }
+
+                        break;
+                    }
+                    catch (const exception& e){
+                        cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
+                        system("pause");
+                        system("cls");
+                    }
+                }
+
+                lihat_kolam(id);
+
+                break;
+            }
+
+            case 3:{
+                system("cls");
+                
+                while(true){
+                    cout << "Masukan Tipe Kolam Yang Ingin Di lihat (Kecil, Sedang, Besar): ";
+                    getline(cin >> ws, input_tipe);
+    
+                    for (char &huruf : input_tipe)
+                    {
+                        huruf = tolower(huruf);
+                    }
+
+                    if(input_tipe != "kecil" && input_tipe != "sedang" && input_tipe != "besar"){
+                        cout << "[ERROR] Input Tidak Valid!!!" << endl;
+                        cout << "[INFO] Silahkan Coba Lagi!!!" << endl;
+                        system("pause");
+                        system("cls");
+                        continue; 
+                    }
+
+                    cout << "========================================================================" << endl;
+                    cout << "==================== DAFTAR KOLAM BERDASARKAN TIPE =====================" << endl;
+                    cout << "========================================================================" << endl;
+                    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+                    cout << "------------------------------------------------------------------------" << endl;
+                    
+                     for(int i = 0; i < j.size(); i++){
+                        for(int k = 0; k < j.size() - 1 - i; k++){
+                            if (j[k]["id"] > j[k + 1]["id"]){
+                                swap(j[k], j[k + 1]); 
+                            }
+                        }
+                    }
+
+                    bool ada_data = false;
+                    for(const auto &item : j){
+                        if(item["tipe"] == input_tipe){ 
+                            cout << item["id"] << "\t|" << item["tipe"] << " \t| " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+                            cout << "------------------------------------------------------------------------" << endl;
+                            ada_data = true;
+                        }
+                    }
+
+                    if (!ada_data) {
+                        cout << "[INFO] Tidak Ada Kolam Dengan (Tipe: " << input_tipe << ") Saat Ini!!!" << endl;
+                    }
+
+                    system("pause");
+                    system("cls");
+                    break; 
+                }
+                break;
+            }
+
+            case 4:{
+                system("cls");
+                
+                while(true){
+                    cout << "Masukan Tipe Kolam Yang Ingin Di lihat (Kosong, Terisi, Panen): ";
+                    getline(cin >> ws, input_status);
+    
+                    for (char &huruf : input_status)
+                    {
+                        huruf = tolower(huruf);
+                    }
+
+                    input_status[0] = toupper(input_status[0]);
+    
+                    if(input_status != "Kosong" && input_status != "Terisi" && input_status != "Panen"){
+                        cout << "[ERROR] Input Tidak Valid!!!" << endl;
+                        cout << "[INFO] Silahkan Coba Lagi!!!" << endl;
+                        system("pause");
+                        system("cls");
+                        continue; 
+                    }
+
+                    cout << "========================================================================" << endl;
+                    cout << "==================== DAFTAR KOLAM BERDASARKAN STATUS ===================" << endl;
+                    cout << "========================================================================" << endl;
+                    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+                    cout << "------------------------------------------------------------------------" << endl;
+                    
+                     for(int i = 0; i < j.size(); i++){
+                        for(int k = 0; k < j.size() - 1 - i; k++){
+                            if (j[k]["id"] > j[k + 1]["id"]){
+                                swap(j[k], j[k + 1]); 
+                            }
+                        }
+                    }
+
+                    bool ada_data = false;
+                    for(const auto &item : j){
+                        if(item["status_kolam"] == input_status){ 
+                            cout << item["id"] << "\t|" << item["tipe"] << " \t| " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+                            cout << "------------------------------------------------------------------------" << endl;
+                            ada_data = true;
+                        }
+                    }
+
+                    if (!ada_data) {
+                        cout << "[INFO] Tidak Ada Kolam Dengan (Status: " << input_status << ") Saat Ini!!!" << endl;
+                    }
+
+                    system("pause");
+                    system("cls");
+                    break; 
+                }
+                break;
+            }
+
+            case 5:
+                system("cls");
+                loop = false;
+                break;
+
+            default:
+                cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                system("pause");
+                break;
         }
     }
-    system("pause");
-    system("cls");
-    return;
 }
 
 void buat_kolam()
@@ -368,7 +777,8 @@ void buat_kolam()
 
     kolam.status_kolam = "Kosong";
     kolam.populasi_ikan = 0;
-    kolam.totalHargaBenih = 0;
+    kolam.total_harga_benih = 0;
+    kolam.total_mati = 0;
 
     for (char &huruf : kolam.tipe_kolam)
     {
@@ -410,7 +820,8 @@ void buat_kolam()
         {"kapasitas", kolam.kapasitas},
         {"populasi", kolam.populasi_ikan},
         {"status_kolam", kolam.status_kolam},
-        {"hargaBenih", kolam.totalHargaBenih}};
+        {"total_harga_benih", kolam.total_harga_benih},
+        {"total_mati", kolam.total_harga_benih}};
 
     j.push_back(kolamjson);
 
@@ -544,12 +955,14 @@ void tebar_benih()
     json j;
     ifstream fileIn(FILE_KOLAM);
 
-    if (fileIn.is_open()) {
+    if (fileIn.is_open())
+    {
         fileIn >> j;
         fileIn.close();
     }
 
-    if (j.empty()) {
+    if (j.empty())
+    {
         cout << "[INFO] Belum Ada Kolam Yang Dibuat!!!" << endl;
         system("pause");
         system("cls");
@@ -564,73 +977,85 @@ void tebar_benih()
     cout << "----------------------------------------------------------------" << endl;
 
     bool kolam_kosong = false;
-    for (const auto &item : j) {
-        if (item["status_kolam"] == "Kosong") {
+    for (const auto &item : j)
+    {
+        if (item["status_kolam"] == "Kosong")
+        {
             cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
             cout << "----------------------------------------------------------------" << endl;
             kolam_kosong = true;
         }
     }
 
-    if (!kolam_kosong) {
+    if (!kolam_kosong)
+    {
         cout << "\n[INFO] Tidak Ada Kolam Kosong Saat Ini. Silahkan Bongkar/Buat Kolam Baru!" << endl;
         system("pause");
         system("cls");
-        return; 
+        return;
     }
 
     int id_kolam = -1;
     string input_pilihan;
 
-    while(true) {
-        try {
+    while (true)
+    {
+        try
+        {
             cout << "\nMasukkan ID Kolam Yang Ingin Di Tebar Benih (0 untuk batal): ";
             getline(cin >> ws, input_pilihan);
             id_kolam = stoi(input_pilihan);
 
-            if (id_kolam == 0) {
+            if (id_kolam == 0)
+            {
                 system("cls");
-                return; 
+                return;
             }
-            break; 
+            break;
         }
-        catch (const exception &e) {
+        catch (const exception &e)
+        {
             cout << "[ERROR] ID Tidak Valid! Masukkan Angka." << endl;
         }
     }
-    
+
     bool ditemukan = false;
     string jumlah, harga;
     int jumlahBenih, hargaBenih, totalHargaBenih;
 
-    for (auto &item : j) {
-        if (item["id"] == id_kolam && item["status_kolam"] == "Kosong") {
+    for (auto &item : j)
+    {
+        if (item["id"] == id_kolam && item["status_kolam"] == "Kosong")
+        {
             ditemukan = true;
             bool input_sukses = true;
 
-            while(input_sukses){
-                try {
+            while (input_sukses)
+            {
+                try
+                {
                     cout << "Input Jumlah Benih yang ingin anda Tebar (gram): ";
                     getline(cin >> ws, jumlah);
 
                     jumlahBenih = stoi(jumlah);
 
-                    if (jumlahBenih <= 0){
+                    if (jumlahBenih <= 0)
+                    {
                         cout << "[ERROR] Jumlah Benih Harus Lebih Dari 0!!!" << endl;
                         continue;
                     }
 
-                    if (jumlahBenih > item["kapasitas"]) {
-                        cout << "[ERROR] Jumlah Benih melebihi Kapasitas Kolam (" << item["kapasitas"] << ")!" << endl;
-                        continue; 
+                    if (jumlahBenih > item["kapasitas"])
+                    {
                     }
-                    
+
                     cout << "Input Harga Benih (Rp/Gram): ";
                     getline(cin >> ws, harga);
 
                     hargaBenih = stoi(harga);
 
-                    if (hargaBenih <= 0) {
+                    if (hargaBenih <= 0)
+                    {
                         cout << "[ERROR] Harga Benih Harus Lebih Dari 0!!!" << endl;
                         continue;
                     }
@@ -639,29 +1064,230 @@ void tebar_benih()
                     item["hargaBenih"] = totalHargaBenih;
                     item["status_kolam"] = "Terisi";
                     item["populasi"] = jumlahBenih;
-                    
-                    input_sukses = false; 
+
+                    input_sukses = false;
                 }
-                catch(const exception& e) {
+                catch (const exception &e)
+                {
                     cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
                 }
             }
-            break; 
+            break;
         }
     }
 
-    if(ditemukan){
+    if (ditemukan)
+    {
         ofstream fileOut(FILE_KOLAM);
         fileOut << j.dump(4);
         fileOut.close();
         cout << "\n[BERHASIL] Kolam Dengan ID " << id_kolam << " Telah Di Tebar Benih!!!" << endl;
-    } 
-    else{
+    }
+    else
+    {
         cout << "\n[ERROR] ID Kolam Tidak Ditemukan atau Kolam Sudah Terisi!!!" << endl;
     }
 
     system("pause");
     system("cls");
+}
+
+void jual_ikan(){
+    json j, r, s;
+    ifstream fileklm(FILE_KOLAM);
+    ifstream filejl(FILE_REKBER);
+    ifstream files(FILE_STAFF);
+
+    if(filejl.is_open()){
+        filejl >> r;
+        filejl.close();
+    }
+
+    if(files.is_open()){
+        files >> s;
+        files.close();
+    }
+
+    if(fileklm.is_open())
+    {
+        fileklm >> j;
+        fileklm.close();
+    }
+
+    if(j.empty())
+    {
+        cout << "[INFO] Belum Ada Kolam Yang Dibuat!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+
+    bool kolam_panen = true;
+    for (const auto &item : j)
+        {
+            if(item["status_kolam"] == "Panen"){
+                kolam_panen = false;
+            }
+        }
+
+    if(kolam_panen){
+        cout << "[INFO] Belum Ada Kolam Dengan Status Panen Saat Ini!!!" << endl;
+        system("pause");
+        system("clear");
+        return;
+    }
+    else if(!kolam_panen){
+            system("cls");
+            cout << "================================================================" << endl;
+            cout << "================ DAFTAR KOLAM SIAP PANEN =======================" << endl;
+            cout << "================================================================" << endl;
+            cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+            cout << "----------------------------------------------------------------" << endl;
+
+            for(int i = 0; i < j.size(); i++){
+                for(int k = 0; k < j.size() - 1 - i; k++){
+                    if (j[k]["id"] > j[k + 1]["id"]){
+                        swap(j[k], j[k + 1]); 
+                    }
+                }
+            }
+            
+            for (const auto &item : j)
+            {
+                if(item["status_kolam"] == "Panen"){
+                    cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+                    cout << "----------------------------------------------------------------" << endl;
+                }
+            }
+
+            string input_id;
+            int id;
+
+            while(true){
+                try{
+                    cout << "Masukan ID Kolam Yang Ingin Dipanen & Dijual (0 Untuk Batal): ";
+                    getline(cin >> ws, input_id);
+            
+                    id = stoi(input_id);
+            
+                    if(id == 0){
+                        system("cls");
+                        return;
+                    }
+            
+                    break;
+                }
+                catch(const exception& e){
+                    cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
+                    cout << "[INFO] Silahkan Coba Lagi!!!" << endl;
+                    system("pause");
+                    system("cls");
+
+                    cout << "================================================================" << endl;
+                    cout << "================ DAFTAR KOLAM SIAP PANEN =======================" << endl;
+                    cout << "================================================================" << endl;
+                    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
+                    cout << "----------------------------------------------------------------" << endl;
+
+                    for(int i = 0; i < j.size(); i++){
+                        for(int k = 0; k < j.size() - 1 - i; k++){
+                            if (j[k]["id"] > j[k + 1]["id"]){
+                                swap(j[k], j[k + 1]); 
+                            }
+                        }
+                    }
+                    
+                    for (const auto &item : j)
+                    {
+                        if(item["status_kolam"] == "Panen"){
+                            cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
+                            cout << "----------------------------------------------------------------" << endl;
+                        }
+                    }
+                }
+            }
+
+        bool ditemukan = false;
+        for(auto &item : j)
+        {
+            if(item["id"] == id && item["status_kolam"] == "Panen"){
+                double jumlah_ikan = item["populasi"];
+                double harga_benih = item["total_harga_benih"];
+                
+                double harga_pakan; // <-- ERROR KARENA BELUM ADA NILAINYA
+                double modal = harga_benih + harga_pakan;
+                double harga_ikan = (modal + (modal * 2)) / jumlah_ikan;
+                double total_kotor = jumlah_ikan * harga_ikan;
+                double gaji_staff_total = total_kotor * 0.5;
+                double keuntungan_bersih = total_kotor - (gaji_staff_total + modal);
+
+               //Gaji Staff
+                int jumlah_staff_aktif = 0;
+                for(auto &st : s){
+                    if(st["status_kerja"] == true){
+                        jumlah_staff_aktif++;
+                    }
+                }
+
+                if(jumlah_staff_aktif > 0){
+                    double gaji_per_orang = gaji_staff_total / jumlah_staff_aktif;
+                    
+                    for(auto &st : s){
+                        if(st["status_kerja"] == true){
+                            st["saldo"] = st["saldo"] + gaji_per_orang; 
+                        }
+                    }
+
+                    cout << "\n[SUCCESS] Gaji Total (Rp. " << gaji_staff_total << ") Telah Dibagikan Kepada " << jumlah_staff_aktif << " Staff!!!" << endl;
+                } 
+                else{
+                    keuntungan_bersih += gaji_staff_total;
+                    cout << "\n[GREAT] Tidak Ada Staff Aktif. Jatah Gaji Masuk Ke Reking Perusahaan!!!" << endl;
+                }
+
+                //REKBER ADMIN
+                double saldo_admin_lama = r.value("rekening_admin", 0.0);
+                r["rekening_admin"] = saldo_admin_lama + keuntungan_bersih;
+                cout << "[SUKSES] Keuntungan Bersih (Rp. " << keuntungan_bersih << ") Masuk Ke Rekening Admin!!!" << endl;
+
+                //Reset Kolam
+                item["hargaBenih"] = 0;
+                item["populasi"] = 0;
+                item["status_kolam"] = "Kosong";
+                item["total_harga_benih"] = 0;
+                item["total_mati"] = 0;
+                
+                ditemukan = true;
+                break;
+            }
+        }
+
+        if (ditemukan)
+        {
+            ofstream outkolam(FILE_KOLAM);
+            outkolam << j.dump(4);
+            outkolam.close();
+
+            ofstream outrekening(FILE_REKBER);
+            outrekening << r.dump(4);
+            outrekening.close();
+
+            ofstream outstaff(FILE_STAFF);
+            outstaff << s.dump(4);
+            outstaff.close();
+
+            cout << "[BERHASIL] Ikan Di Kolam Dengan (ID: " << id << ") Telah Terjual Semua !!!" << endl;
+            system("pause");
+            system("cls");
+        }
+        else
+        {
+            cout << "[ERROR] ID Kolam Tidak Ditemukan!!!" << endl;
+            system("pause");
+            system("cls");
+        }
+        
+    }
 }
 
 void laporan_keuangan()
