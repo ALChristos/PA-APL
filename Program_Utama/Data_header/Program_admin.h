@@ -14,6 +14,5 @@ void buat_kolam();
 void lihat_kolam();
 void bongkar_kolam();
 void tebar_benih();
-void pantau_tambak();
 
 #endif

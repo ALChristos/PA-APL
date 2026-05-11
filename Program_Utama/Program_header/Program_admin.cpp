@@ -664,10 +664,6 @@ void tebar_benih()
     system("cls");
 }
 
-void pantau_tambak()
-{
-}
-
 void laporan_keuangan()
 {
 }
