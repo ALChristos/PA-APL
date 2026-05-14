@@ -342,6 +342,7 @@ void menu_staff(int &id_staff)
         switch (pilihan)
         {
         case 1:
+            tebar_pakan(id_staff);
             break;
 
         case 2:
@@ -349,7 +350,7 @@ void menu_staff(int &id_staff)
             break;
 
         case 3:
-            catat_kolam(id_staff);
+            catat_panen(id_staff);
             break;
 
         case 4:

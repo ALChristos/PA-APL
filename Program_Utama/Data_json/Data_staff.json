@@ -1,3 +1,10 @@
 [
-  
+    {
+        "id": 1,
+        "nama": "popo",
+        "pass": "123",
+        "saldo": 0.0,
+        "status_kerja": true,
+        "status_terima": true
+    }
 ]

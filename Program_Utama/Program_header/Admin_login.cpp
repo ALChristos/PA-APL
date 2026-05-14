@@ -180,7 +180,7 @@ void menu_admin()
             {
                 system("cls");
                 cout << "============================" << endl;
-                cout << "===== MENU KEOLA STAFF =====" << endl;
+                cout << "===== MENU KELOLA STAFF ====" << endl;
                 cout << "============================" << endl;
                 cout << "1. Pecat Staff" << endl;
                 cout << "2. Lihat Staff" << endl;
@@ -231,7 +231,58 @@ void menu_admin()
             break;
 
         case 4:
+        {
+            bool loop = true;
+
+            while (loop)
+            {
+                system("cls");
+                cout << "============================" << endl;
+                cout << "===== MENU KELOLA PAKAN ====" << endl;
+                cout << "============================" << endl;
+                cout << "1. Update Stok Pakan" << endl;
+                cout << "2. update Harga Pakan" << endl;
+                cout << "3. Lihat Data Pakan" << endl;
+                cout << "4. Keluar" << endl;
+                cout << "Masukan Pilihan: ";
+                getline(cin >> ws, pilihan_menu);
+
+                try
+                {
+                    pilihan = stoi(pilihan_menu);
+                }
+                catch (const exception &e)
+                {
+                    pilihan = 0;
+                }
+
+                switch (pilihan)
+                {
+                case 1:
+                    update_stok_pakan();
+                    break;
+
+                case 2:
+                    update_harga_pakan();
+                    break;
+
+                case 3:
+                    tampilkan_data_pakan();
+                    break;
+
+                case 4:
+                    system("cls");
+                    loop = false;
+                    break;
+
+                default:
+                    cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                    system("pause");
+                    break;
+                }
+            }
             break;
+        }
 
         case 5:
             jual_ikan();

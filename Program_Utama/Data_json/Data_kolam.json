@@ -1,3 +1,16 @@
 [
-    
+    {
+        "fase_kolam": "Remaja",
+        "id": 1,
+        "kapasitas": 3000,
+        "populasi": 3000,
+        "status_kolam": "Terisi",
+        "tipe": "besar",
+        "total_berat_kolam": 150000,
+        "total_harga_benih": 3000000,
+        "total_harga_pakan": 225000,
+        "total_mati": 0,
+        "total_modal": 0,
+        "umur_kolam": 30
+    }
 ]
