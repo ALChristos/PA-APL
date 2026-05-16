@@ -8,7 +8,6 @@
 #include "../Data_header/Program_staff.h"
 #include "../Data_header/struct.h"
 #include "../Data_json/json.hpp"
-// #include "../Data_header/kelolaPakan.h"
 
 using namespace std;
 using json = nlohmann::json;
@@ -102,7 +101,8 @@ void menu_admin()
         cout << "4. Kelola Pakan Ikan" << endl;
         cout << "5. Jual Ikan" << endl;
         cout << "6. Cek Laporan" << endl;
-        cout << "7. Keluar" << endl;
+        cout << "7. Cek Saldo Rekening" << endl;
+        cout << "8. Keluar" << endl;
         cout << "Masukan Pilihan: ";
         getline(cin >> ws, pilihan_menu);
 
@@ -240,10 +240,9 @@ void menu_admin()
                 cout << "============================" << endl;
                 cout << "===== MENU KELOLA PAKAN ====" << endl;
                 cout << "============================" << endl;
-                cout << "1. Update Stok Pakan" << endl;
-                cout << "2. update Harga Pakan" << endl;
-                cout << "3. Lihat Data Pakan" << endl;
-                cout << "4. Keluar" << endl;
+                cout << "1. Beli Pakan" << endl;
+                cout << "2. Lihat Data Pakan" << endl;
+                cout << "3. Keluar" << endl;
                 cout << "Masukan Pilihan: ";
                 getline(cin >> ws, pilihan_menu);
 
@@ -259,18 +258,14 @@ void menu_admin()
                 switch (pilihan)
                 {
                 case 1:
-                    update_stok_pakan();
+                    beli_pakan();
                     break;
 
                 case 2:
-                    update_harga_pakan();
-                    break;
-
-                case 3:
                     tampilkan_data_pakan();
                     break;
 
-                case 4:
+                case 3:
                     system("cls");
                     loop = false;
                     break;
@@ -289,9 +284,58 @@ void menu_admin()
             break;
 
         case 6:
+        {
+            bool loop = true;
+            while(loop)
+            {
+                system("cls");
+                cout << "============================" << endl;
+                cout << "===== MENU CEK LAPORAN =====" << endl;
+                cout << "============================" << endl;
+                cout << "1. Lihat Laporan Keuangan" << endl;
+                cout << "2. Lihat Laporan Staff" << endl;
+                cout << "3. Keluar" << endl;
+                cout << "Masukan Pilihan: ";
+                getline(cin >> ws, pilihan_menu);
+
+                try
+                {
+                    pilihan = stoi(pilihan_menu);
+                }
+                catch (const exception &e)
+                {
+                    pilihan = 0;
+                }
+
+                switch (pilihan)
+                {
+                case 1:
+                    laporan_keuangan();
+                    break;
+
+                case 2:
+                    laporan_staff();
+                    break;
+
+                case 3:
+                    system("cls");
+                    loop = false;
+                    break;
+
+                default:
+                    cout << "[ERROR] Pilihan Tidak Valid, Silahkan Input Pilihan Yang Sesuai!!!" << endl;
+                    system("pause");
+                    break;
+                }
+            }
             break;
+        }
 
         case 7:
+            rekber_admin();
+            break;
+
+        case 8:
             admin_menu = false;
             system("cls");
             break;

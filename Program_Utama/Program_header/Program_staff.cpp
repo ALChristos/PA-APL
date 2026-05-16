@@ -13,11 +13,13 @@ using json = nlohmann::json;
 const string FILE_STAFF = "Data_json/Data_staff.json";
 const string FILE_KOLAM = "Data_json/Data_kolam.json";
 const string FILE_PAKAN = "Data_json/Data_pakan.json";
+const string FILE_LAPORAN = "Data_json/Laporan_staff.json";
 const string FILE_KEUANGAN = "Data_json/Laporan_keuangan.json";
+const string FILE_GAJI = "Data_json/Data_gaji.json";
 
 using namespace std;
 
-json load_json(string PATH, string messages)
+static json load_json(string PATH, string messages)
 {
     json j;
     ifstream fileIn(PATH);
@@ -51,8 +53,9 @@ void tebar_pakan(int &id_staff)
         return;
     }
 
-    int harga_pakan;
-    int stok_pakan;
+    double harga_pakan = 0.0;
+    double stok_pakan= 0.0;
+    
     for (const auto &item : pakanj)
     {
 
@@ -70,13 +73,11 @@ void tebar_pakan(int &id_staff)
             system("cls");
             return;
         }
-        harga_pakan = item["harga_per_kg"];
-        harga_pakan /= 1000; // Satuan di data berupa kg, maka dikonversi dulu jadi gram
-        stok_pakan = item["stok_kg"];
-        stok_pakan *= 1000; // Satuan di data berupa kg, maka dikonversi dulu jadi gram
+
+        harga_pakan = (double)item["harga_per_kg"] / 1000.0; // Satuan di data berupa kg, maka dikonversi dulu jadi gram
+        stok_pakan = (double)item["stok_kg"] * 1000.0;// Satuan di data berupa kg, maka dikonversi dulu jadi gram
     }
 
-    // system("cls");
     cout << "================================================================" << endl;
     cout << "====================== DAFTAR KOLAM  ===========================" << endl;
     cout << "================================================================" << endl;
@@ -138,7 +139,8 @@ void tebar_pakan(int &id_staff)
 
     bool ditemukan = false;
     string hari, fase_kolam;
-    int interval_hari, total_pakan_perhari, total_harga_pakan, id_kolam_target, total_berat_kolam, populasi, total_pakan_interval;
+
+    double interval_hari, total_pakan_perhari, total_harga_pakan, id_kolam_target, total_berat_kolam, populasi, total_pakan_interval;
 
     for (auto &item : kolamj)
     {
@@ -152,17 +154,17 @@ void tebar_pakan(int &id_staff)
             fase_kolam = item["fase_kolam"];
             populasi = item["populasi"];
 
-            while (input_sukses)
+           while (input_sukses)
             {
-
                 try
                 {
                     int umur_kolam = item["umur_kolam"];
                     total_pakan_interval = 0;
+                    
+                    total_harga_pakan = item.value("total_harga_pakan", 0.0); 
 
                     cout << "Interval Hari Pemberian Pakan (dimulai dari hari ke: " << umur_kolam << "): ";
                     getline(cin >> ws, hari);
-
                     interval_hari = stoi(hari);
 
                     if (interval_hari <= 0)
@@ -171,16 +173,17 @@ void tebar_pakan(int &id_staff)
                         continue;
                     }
 
-                    bool is_remaja, is_dewasa, is_panen = false;
+                    bool is_remaja = false, is_dewasa = false, is_panen = false;
 
                     for (int i = 0; i < interval_hari; i++)
                     {
                         umur_kolam += 1;
-                        if (umur_kolam > 20)
+                        if (umur_kolam > 90)
                         {
-                            item["fase_kolam"] = "Remaja";
-                            item["total_berat_kolam"] = populasi * 50;
-                            is_remaja = true;
+                            item["fase_kolam"] = "Panen";
+                            item["total_berat_kolam"] = populasi * 150;
+                            item["status_kolam"] = "Panen";
+                            is_panen = true;
                         }
                         else if (umur_kolam > 60)
                         {
@@ -188,18 +191,17 @@ void tebar_pakan(int &id_staff)
                             item["total_berat_kolam"] = populasi * 100;
                             is_dewasa = true;
                         }
-                        else if (umur_kolam > 90)
+                        else if (umur_kolam > 20)
                         {
-                            item["fase_kolam"] = "Panen";
-                            item["total_berat_kolam"] = populasi * 150;
-                            item["status_kolam"] = "Panen";
-                            is_panen = true;
+                            item["fase_kolam"] = "Remaja";
+                            item["total_berat_kolam"] = populasi * 50;
+                            is_remaja = true;
                         }
 
-                        total_harga_pakan = item["total_harga_pakan"];
                         total_berat_kolam = item["total_berat_kolam"];
                         total_pakan_perhari = total_berat_kolam * 0.05;
                         total_pakan_interval += total_pakan_perhari;
+                        
                         total_harga_pakan += (total_pakan_perhari * harga_pakan);
                     }
 
@@ -209,28 +211,19 @@ void tebar_pakan(int &id_staff)
                         continue;
                     }
 
-                    if (is_remaja)
-                    {
-                        cout << "\n[INFO] Kolam dengan ID: " << item["id"] << "Telah Memasuki Fase Remaja!! " << endl;
-                    }
-                    else if (is_dewasa)
-                    {
-                        cout << "\n[INFO] Kolam dengan ID: " << item["id"] << "Telah Memasuki Fase Dewasa!! " << endl;
-                    }
-                    else if (is_panen)
-                    {
-                        cout << "\n[INFO] Kolam dengan ID: " << item["id"] << "Telah Memasuki Fase Panen!! " << endl;
-                    }
+                    if (is_remaja) cout << "\n[INFO] Kolam dengan ID: " << item["id"] << " Telah Memasuki Fase Remaja!! " << endl;
+                    else if (is_dewasa) cout << "\n[INFO] Kolam dengan ID: " << item["id"] << " Telah Memasuki Fase Dewasa!! " << endl;
+                    else if (is_panen) cout << "\n[INFO] Kolam dengan ID: " << item["id"] << " Telah Memasuki Fase Panen!! " << endl;
 
                     item["umur_kolam"] = umur_kolam;
                     item["total_harga_pakan"] = total_harga_pakan;
 
+                    double sisa_stok_pakan_gram = stok_pakan - total_pakan_interval;
                     for (auto &item_pakan : pakanj)
                     {
-                        stok_pakan -= total_pakan_interval;
-                        stok_pakan /= 1000;
-                        item_pakan["stok_kg"] = stok_pakan;
+                        item_pakan["stok_kg"] = sisa_stok_pakan_gram / 1000.0;
                     }
+                    
                     input_sukses = false;
                 }
                 catch (const exception &e)
@@ -247,9 +240,36 @@ void tebar_pakan(int &id_staff)
         ofstream fileOut(FILE_KOLAM);
         fileOut << kolamj.dump(4);
         fileOut.close();
+
+        ofstream fileOutPakan(FILE_PAKAN);
+        fileOutPakan << pakanj.dump(4);
+        fileOutPakan.close();
+
+        json laporanj = load_json(FILE_LAPORAN, "[INFO] Belum Ada Laporan Staff Yang Terdata!!!"); 
+        
+        json laporan_baru = {
+            {"id_staff", id_staff},
+            {"jenis_kegiatan", "Tebar Pakan"},
+            {"id_kolam", id_kolam_target},
+            {"rentang_hari", interval_hari},
+            {"total_pakan_gram", total_pakan_interval},
+            {"total_biaya", total_harga_pakan},
+            {"dicatat_oleh", usernameStaff}
+        };
+
+        if(!laporanj.is_array()){
+            laporanj = json::array(); // Memastikan JSON bentuknya array
+        } 
+        
+        laporanj.push_back(laporan_baru);
+
+        ofstream fileOutLaporan(FILE_LAPORAN);
+        fileOutLaporan << laporanj.dump(4);
+        fileOutLaporan.close();
+        
         cout << "\n[BERHASIL] Kolam Dengan ID " << id_kolam << " Telah Diberi Pakannya!!!!" << endl;
 
-        cout << "\nBerikut Untuk Laporannya: " << endl;
+        cout << "\nBerikut Untuk Laporannya (Telah Tersimpan di Sistem): " << endl;
         cout << "\n=================================" << endl;
         cout << "        LAPORAN TEBAR PAKAN      " << endl;
         cout << "=================================" << endl;
@@ -258,6 +278,7 @@ void tebar_pakan(int &id_staff)
         cout << "Total Pakan    : " << total_pakan_interval << " gram" << endl;
         cout << "Total Biaya    : " << total_harga_pakan << endl;
         cout << "Dicatat oleh   : " << usernameStaff << endl;
+        cout << "ID Staff       : " << id_staff << endl;
         cout << "=================================" << endl;
     }
     else
@@ -293,7 +314,7 @@ void catatMortalitas(int &id_staff)
 
     system("cls");
     cout << "================================================================" << endl;
-    cout << "================ DAFTAR KOLAM KOSONG ===========================" << endl;
+    cout << "======================= DAFTAR KOLAM ===========================" << endl;
     cout << "================================================================" << endl;
     cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
     cout << "----------------------------------------------------------------" << endl;
@@ -374,6 +395,8 @@ void catatMortalitas(int &id_staff)
                     int populasi = item["populasi"];
                     populasiAkhir = populasi - totalMati;
                     item["populasi"] = populasiAkhir;
+                    //totalMati hari ini ke akumulasi total_mati sebelumnya
+                    item["total_mati"] = item.value("total_mati", 0) + totalMati;
 
                     if (fase_kolam == "Benih")
                     {
@@ -418,16 +441,39 @@ void catatMortalitas(int &id_staff)
         ofstream fileOut(FILE_KOLAM);
         fileOut << kolamj.dump(4);
         fileOut.close();
+
+        json laporanj = load_json(FILE_LAPORAN, ""); 
+        
+        json laporan_baru = {
+            {"id_staff", id_staff},
+            {"jenis_kegiatan", "Catat Mortalitas"},
+            {"id_kolam", id_kolam_target},
+            {"total_mati", totalMati},
+            {"populasi_akhir", populasiAkhir},
+            {"dicatat_oleh", usernameStaff}
+        };
+
+        if (!laporanj.is_array()){
+            laporanj = json::array(); 
+        } 
+
+        laporanj.push_back(laporan_baru);
+
+        ofstream fileOutLaporan(FILE_LAPORAN);
+        fileOutLaporan << laporanj.dump(4);
+        fileOutLaporan.close();
+
         cout << "\n[BERHASIL] Kolam Dengan ID " << id_kolam << " Telah Di Catat Mortalitasnya!!!" << endl;
 
         cout << "\nBerikut Untuk Laporannya: " << endl;
         cout << "\n=================================" << endl;
         cout << "        LAPORAN MORTALITAS        " << endl;
         cout << "=================================" << endl;
-        cout << "Kolam          : " << id_kolam_target << endl;
+        cout << "ID Kolam       : " << id_kolam_target << endl;
         cout << "Total Mati     : " << totalMati << endl;
         cout << "Populasi Akhir : " << populasiAkhir << endl;
         cout << "Dicatat oleh   : " << usernameStaff << endl;
+        cout << "ID Staff       : " << id_staff << endl;
         cout << "=================================" << endl;
     }
     else
@@ -439,45 +485,70 @@ void catatMortalitas(int &id_staff)
     system("cls");
 }
 
-void catat_panen(int &id_staff)
+void rekening_staff(int &id_staff)
 {
+    json staffj = load_json(FILE_STAFF, "[INFO] Data Staff Tidak Ditemukan!!!");
+    json riwayatj = load_json(FILE_GAJI, ""); 
 
-    json kolamj = load_json(FILE_KOLAM, "[INFO] Belum Ada Kolam Yang Dibuat!!!");
-    json staffj = load_json(FILE_STAFF, "[INFO] Belum Ada Staff Yang Terdaftar!!!");
-
-    if (kolamj.empty() || staffj.empty())
+    if(staffj.empty())
     {
-        system("pause");
-        system("cls");
         return;
-    }
+    } 
 
     system("cls");
-    cout << "================================================================" << endl;
-    cout << "================ DAFTAR KOLAM SIAP PANEN =======================" << endl;
-    cout << "================================================================" << endl;
-    cout << "ID\t| Tipe\t | Kapasitas\t| Populasi\t| Status\t|" << endl;
-    cout << "----------------------------------------------------------------" << endl;
+    string nama_staff;
+    double saldo_sekarang = 0.0;
+    bool ketemu = false;
 
-    for (int i = 0; i < kolamj.size(); i++)
+    for (const auto &st : staffj)
     {
-        for (int k = 0; k < kolamj.size() - 1 - i; k++)
+        if (st["id"] == id_staff)
         {
-            if (kolamj[k]["id"] > kolamj[k + 1]["id"])
+            nama_staff = st["nama"];
+            saldo_sekarang = st.value("saldo", 0.0);
+            ketemu = true;
+            break;
+        }
+    }
+
+    if (!ketemu)
+    {
+        cout << "[ERROR] ID Staff Tidak Valid!" << endl;
+        system("pause"); system("cls"); return;
+    }
+
+    cout << "=========================================================" << endl;
+    cout << "                  INFORMASI REKENING STAFF               " << endl;
+    cout << "=========================================================" << endl;
+    cout << "Nama Staff    : " << nama_staff << endl;
+    cout << "ID Staff      : " << id_staff << endl;
+    cout << "Total Saldo   : Rp " << saldo_sekarang << endl;
+    cout << "=========================================================" << endl;
+    cout << "                     MUTASI RIWAYAT GAJI                 " << endl;
+    cout << "---------------------------------------------------------" << endl;
+
+    bool ada_riwayat = false;
+    
+    if (riwayatj.is_array() && !riwayatj.empty())
+    {
+        for (const auto &item : riwayatj)
+        {
+            if (item.contains("id_staff") && item["id_staff"] == id_staff)
             {
-                swap(kolamj[k], kolamj[k + 1]);
+                cout << "[+] GAJI MASUK   : Rp " << item["nominal_gaji"] << endl;
+                cout << "    Keterangan   : Bagi hasil panen Kolam ID " << item["id_kolam_panen"] << endl;
+                cout << "---------------------------------------------------------" << endl;
+                ada_riwayat = true;
             }
         }
     }
 
-    for (const auto &item : kolamj)
+    if (!ada_riwayat)
     {
-        if (item["status_kolam"] == "Terisi")
-        {
-            cout << item["id"] << "\t|" << item["tipe"] << " | " << item["kapasitas"] << "\t\t|" << item["populasi"] << "\t\t|" << item["status_kolam"] << "\t|" << endl;
-            cout << "----------------------------------------------------------------" << endl;
-        }
+        cout << "  [INFO] Belum Ada Riwayat Penerimaan Gaji Saat Ini!!!   " << endl;
+        cout << "---------------------------------------------------------" << endl;
     }
 
-    // COMING SOON, BUTUH DATA PAKAN 10 HARI PERTAMA AGAR PROGRAM DAPAT BERJALAN DENGAN ERROR HANDLING
+    system("pause");
+    system("cls");
 }

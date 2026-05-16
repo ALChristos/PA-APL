@@ -325,7 +325,7 @@ void menu_staff(int &id_staff)
         cout << "======================================" << endl;
         cout << "1. Update Jatah Pakan" << endl;
         cout << "2. Catat Kematian Ikan" << endl;
-        cout << "3. Catat Kolam Siap Panen" << endl;
+        cout << "3. Lihat Saldo Rekening"<< endl;
         cout << "4. Keluar" << endl;
         cout << "Pilihan: ";
         getline(cin >> ws, pilihan_menu);
@@ -350,7 +350,7 @@ void menu_staff(int &id_staff)
             break;
 
         case 3:
-            catat_panen(id_staff);
+            rekening_staff(id_staff);
             break;
 
         case 4:

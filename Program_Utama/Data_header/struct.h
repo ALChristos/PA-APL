@@ -44,7 +44,7 @@ struct Balance
 
 struct Keuangan
 {
-    int id_transaksi;
+    int id_penjualan_kolam;
     double pengeluaran;
     double untung_bersih;
     string keterangan;

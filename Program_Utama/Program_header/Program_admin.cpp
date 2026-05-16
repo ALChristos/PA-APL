@@ -15,6 +15,27 @@ const string FILE_KOLAM = "Data_json/Data_kolam.json";
 const string FILE_KEUANGAN = "Data_json/Laporan_keuangan.json";
 const string FILE_REKBER = "Data_json/Rekber_admin.json";
 const string FILE_PAKAN = "Data_json/Data_pakan.json";
+const string FILE_LAPORAN = "Data_json/Laporan_staff.json";
+const string FILE_GAJI = "Data_json/Data_gaji.json";
+
+static json load_json(string PATH, string messages)
+{
+    json j;
+    ifstream fileIn(PATH);
+
+    if (fileIn.is_open())
+    {
+        fileIn >> j;
+        fileIn.close();
+    }
+
+    if (j.empty())
+    {
+        cout << messages << endl;
+    }
+
+    return j;
+}
 
 json load_data_pakan()
 {
@@ -147,14 +168,14 @@ void lihat_staff()
             {
                 try
                 {
-                    cout << "Masukan ID Kolam Yang Ingin Di Lihat (Input 0 Untuk Batal): " << endl;
+                    cout << "Masukan ID Kolam Yang Ingin Di Lihat (Input 0 Untuk Batal): ";
                     getline(cin >> ws, input_id);
 
                     id = stoi(input_id);
 
                     if (id == 0)
                     {
-                        return;
+                        break;
                         system("cls");
                     }
 
@@ -313,7 +334,7 @@ void acc_staff()
     {
         if (item["status_terima"] == false)
         {
-            cout << item["id"] << "\t|" << item["nama"] << "\t| Menunggu\t |" << endl;
+            cout << item["id"] << "\t|" << item["nama"] << "\t\t| Menunggu\t |" << endl;
             cout << "------------------------------------------------------" << endl;
             ada_pending = true;
         }
@@ -1043,13 +1064,20 @@ void tebar_benih()
 {
     Kolam kolam;
 
-    json j;
+    json j, r;
     ifstream fileIn(FILE_KOLAM);
+    ifstream fileRek(FILE_REKBER); 
 
     if (fileIn.is_open())
     {
         fileIn >> j;
         fileIn.close();
+    }
+
+    if(fileRek.is_open())
+    {
+        fileRek >> r;
+        fileRek.close();
     }
 
     if (j.empty())
@@ -1125,7 +1153,11 @@ void tebar_benih()
             {
                 try
                 {
-                    cout << "Input Jumlah Benih yang ingin anda Tebar (gram): ";
+                 
+                    cout << "\n====== JUMLAH SALDO PERUSAHAAN (SALDO: " << r[0].value("rekening_admin", 0.0) << ") ======" << endl;
+                  
+
+                    cout << "\nInput Jumlah Benih yang ingin anda Tebar (gram): ";
                     getline(cin >> ws, jumlah);
 
                     jumlahBenih = stoi(jumlah);
@@ -1138,6 +1170,8 @@ void tebar_benih()
 
                     if (jumlahBenih > item["kapasitas"])
                     {
+                         cout << "[ERROR] Jumlah Benih Melebihi Kapasitas Kolam!!!" << endl;
+                        continue;
                     }
 
                     cout << "Input Harga Benih (Rp/Gram): ";
@@ -1154,6 +1188,18 @@ void tebar_benih()
                     int populasi;
 
                     totalHargaBenih = jumlahBenih * hargaBenih;
+
+                    double saldo_sekarang = r[0].value("rekening_admin", 0.0);
+
+                    if (saldo_sekarang < totalHargaBenih)
+                    {
+                        cout << "\n[ERROR] Saldo Perusahaan Tidak Mencukupi!!!" << endl;
+                        cout << "Sisa Saldo: Rp " << saldo_sekarang << " | Butuh: Rp " << totalHargaBenih << endl;
+                        continue; 
+                    }
+
+                    r[0]["rekening_admin"] = saldo_sekarang - totalHargaBenih;
+
                     item["total_harga_benih"] = totalHargaBenih;
                     item["status_kolam"] = "Terisi";
                     item["populasi"] = jumlahBenih;
@@ -1189,101 +1235,106 @@ void tebar_benih()
     system("cls");
 }
 
-void update_stok_pakan()
+void beli_pakan()
 {
+    json j_pakan = load_json(FILE_PAKAN, "[INFO] Data Pakan Belum Dibuat!!!");
+    json r_rekber = load_json(FILE_REKBER, "[INFO] Data Rekening Belum Dibuat!!!");
 
-    json j = load_data_pakan();
-
-    string jumlah;
-    int jumlah_pakan_tambahan;
-
-    for (auto &item : j)
+    if (j_pakan.empty() || r_rekber.empty())
     {
-        bool input_sukses = true;
-        int stok_pakan = item["stok_kg"];
-
-        while (input_sukses)
-        {
-
-            try
-            {
-                cout << "Input Jumlah Pakan yang ingin anda Tambah (Kilogram): ";
-                getline(cin >> ws, jumlah);
-
-                jumlah_pakan_tambahan = stoi(jumlah);
-
-                if (jumlah_pakan_tambahan <= 0)
-                {
-                    cout << "[ERROR] Jumlah Pakan yang ditambah Harus Lebih Dari 0!!!" << endl;
-                    continue;
-                }
-
-                stok_pakan += jumlah_pakan_tambahan;
-
-                item["stok_kg"] = stok_pakan;
-
-                input_sukses = false;
-            }
-            catch (const exception &e)
-            {
-                cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
-            }
-        }
+        cout << "[ERROR] FILE JSON Data Pakan & Rekber Kosong Melompong!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
     }
 
-    ofstream fileOut(FILE_PAKAN);
-    fileOut << j.dump(4);
-    fileOut.close();
-    cout << "\n[BERHASIL] Stock Pakan Telah Berhasil Diupdate!" << endl;
+    int jumlah_beli, harga_beli, total_biaya;
+    string input_jumlah, input_harga;
 
-    system("pause");
     system("cls");
-}
+    cout << "==============================================" << endl;
+    cout << "============= MENU BELI PAKAN ================" << endl;
+    cout << "==============================================" << endl;
 
-void update_harga_pakan()
-{
-    json j = load_data_pakan();
-
-    string Harga;
-    int harga_pakan, stok_pakan;
-
-    for (auto &item : j)
+    cout << "\n====== JUMLAH SALDO PERUSAHAAN (SALDO: " << r_rekber[0].value("rekening_admin", 0.0) << ") ======" << endl;
+                 
+    while (true)
     {
-        bool input_sukses = true;
-        stok_pakan = item["stok_kg"];
-
-        while (input_sukses)
+        try
         {
+            cout << "Input Jumlah Pakan yang dibeli (Kilogram): ";
+            getline(cin >> ws, input_jumlah);
+            jumlah_beli = stoi(input_jumlah);
 
-            try
+            if (jumlah_beli <= 0)
             {
-                cout << "Input Harga Pakan yang ingin anda Tambah: ";
-                getline(cin >> ws, Harga);
-
-                harga_pakan = stoi(Harga);
-
-                if (harga_pakan <= 0)
-                {
-                    cout << "[ERROR] Harga Pakan yang ditambah Harus Lebih Dari 0!!!" << endl;
-                    continue;
-                }
-
-                item["harga_per_kg"] = harga_pakan;
-                item["total_modal_pakan"] = stok_pakan * harga_pakan;
-
-                input_sukses = false;
+                cout << "[ERROR] Jumlah Pakan Harus Lebih Dari 0!!!" << endl;
+                continue;
             }
-            catch (const exception &e)
-            {
-                cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
-            }
+            break;
+        }
+        catch (const exception &e)
+        {
+            cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
         }
     }
 
-    ofstream fileOut(FILE_PAKAN);
-    fileOut << j.dump(4);
-    fileOut.close();
-    cout << "\n[BERHASIL] Harga Pakan Telah Berhasil Diupdate!" << endl;
+    while (true)
+    {
+        try
+        {
+            cout << "Input Harga Pakan Baru (Rp/Kg): ";
+            getline(cin >> ws, input_harga);
+            harga_beli = stoi(input_harga);
+
+            if (harga_beli <= 0)
+            {
+                cout << "[ERROR] Harga Pakan Harus Lebih Dari 0!!!" << endl;
+                continue;
+            }
+            break;
+        }
+        catch (const exception &e)
+        {
+            cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
+        }
+    }
+
+    total_biaya = jumlah_beli * harga_beli;
+
+    double saldo_perusahaan = r_rekber[0].value("rekening_admin", 0.0);
+
+    if (saldo_perusahaan < total_biaya)
+    {
+        cout << "\n[ERROR] Saldo Perusahaan Tidak Mencukupi!!!" << endl;
+        cout << "Sisa Saldo Kas: Rp " << saldo_perusahaan << " | Butuh Kas: Rp " << total_biaya << endl;
+        system("pause");
+        system("cls");
+        return; 
+    }
+
+    r_rekber[0]["rekening_admin"] = saldo_perusahaan - total_biaya;
+
+    for (auto &item : j_pakan)
+    {
+        int stok_lama = item.value("stok_kg", 0);
+        int modal_lama = item.value("total_modal_pakan", 0);
+
+        item["stok_kg"] = stok_lama + jumlah_beli;
+        item["harga_per_kg"] = harga_beli; 
+        item["total_modal_pakan"] = modal_lama + total_biaya; 
+    }
+
+    ofstream outPakan(FILE_PAKAN);
+    outPakan << j_pakan.dump(4);
+    outPakan.close();
+
+    ofstream outRek(FILE_REKBER);
+    outRek << r_rekber.dump(4);
+    outRek.close();
+
+    cout << "\n[BERHASIL] Pembelian Pakan Sukses Masuk ke Gudang!!!" << endl;
+    cout << "[INFO] Uang Kas Perusahaan Otomatis Dipotong: Rp " << total_biaya << endl;
 
     system("pause");
     system("cls");
@@ -1293,18 +1344,28 @@ void tampilkan_data_pakan()
 {
     json j = load_data_pakan();
 
+    if (j.empty())
+    {
+        cout << "[INFO] Data Pakan Masih Kosong!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+
     for (auto &item : j)
     {
-        int stok = item["stok_kg"];
-        int harga = item["harga_per_kg"];
-        int total_harga = item["total_modal_pakan"];
+        double stok = item.value("stok_kg", 0.0);
+        
+        // Pakai long long karena nominal uang yang berpotensi besar
+        long long harga = item.value("harga_per_kg", 0);
+        long long total_harga = item.value("total_modal_pakan", 0);
 
         cout << "\n=================================" << endl;
         cout << "         DATA STOCK PAKAN        " << endl;
         cout << "=================================" << endl;
-        cout << "Stok           : " << stok << " Kg" << endl;
-        cout << "Harga          : " << harga << endl;
-        cout << "Total Hraga    : " << total_harga << endl;
+        cout << "Stok Gudang    : " << stok << " Kg" << endl;
+        cout << "Harga Rata-Rata: Rp " << harga << " /Kg" << endl;
+        cout << "Total Modal    : Rp " << total_harga << endl;
         cout << "=================================" << endl;
     }
 
@@ -1453,7 +1514,7 @@ void jual_ikan()
                 double jumlah_ikan = item["populasi"];
                 double harga_benih = item["total_harga_benih"];
 
-                double harga_pakan; // <-- ERROR KARENA BELUM ADA NILAINYA
+                double harga_pakan = item.value("total_harga_pakan", 0.0);
                 double modal = harga_benih + harga_pakan;
                 double harga_ikan = (modal + (modal * 2)) / jumlah_ikan;
                 double total_kotor = jumlah_ikan * harga_ikan;
@@ -1474,14 +1535,32 @@ void jual_ikan()
                 {
                     double gaji_per_orang = gaji_staff_total / jumlah_staff_aktif;
 
+                    json riwayatj = load_json(FILE_GAJI, "");
+                    if(!riwayatj.is_array())
+                    {
+                        riwayatj = json::array();
+                    }
+
                     for (auto &st : s)
                     {
                         if (st["status_kerja"] == true)
                         {
-                            int saldo = st["saldo"];
+                            double saldo = st.value("saldo", 0.0);
                             st["saldo"] = saldo + gaji_per_orang;
+
+                            json riwayat_baru = {
+                                {"id_staff", st["id"]},
+                                {"nama_staff", st["nama"]},
+                                {"id_kolam_panen", id},
+                                {"nominal_gaji", gaji_per_orang}
+                            };
+                            riwayatj.push_back(riwayat_baru);
                         }
                     }
+
+                    ofstream fileOutRiwayat(FILE_GAJI);
+                    fileOutRiwayat << riwayatj.dump(4);
+                    fileOutRiwayat.close();
 
                     cout << "\n[SUCCESS] Gaji Total (Rp. " << gaji_staff_total << ") Telah Dibagikan Kepada " << jumlah_staff_aktif << " Staff!!!" << endl;
                 }
@@ -1492,8 +1571,8 @@ void jual_ikan()
                 }
 
                 // REKBER ADMIN
-                double saldo_admin_lama = r.value("rekening_admin", 0.0);
-                r["rekening_admin"] = saldo_admin_lama + keuntungan_bersih;
+                double saldo_admin_lama = r[0].value("rekening_admin", 0.0);
+                r[0]["rekening_admin"] = saldo_admin_lama + keuntungan_bersih;
                 cout << "[SUKSES] Keuntungan Bersih (Rp. " << keuntungan_bersih << ") Masuk Ke Rekening Admin!!!" << endl;
 
                 // Reset Kolam
@@ -1502,6 +1581,26 @@ void jual_ikan()
                 item["status_kolam"] = "Kosong";
                 item["total_harga_benih"] = 0;
                 item["total_mati"] = 0;
+                item["total_harga_pakan"] = 0;
+
+                // Masukan Data Ke JSON LK
+                json keuanganj = load_json(FILE_KEUANGAN, "");
+                if(!keuanganj.is_array()){
+                    keuanganj = json::array();
+                } 
+
+                json keuangan_baru = {
+                    {"id_penjualan_kolam", id},
+                    {"pengeluaran", modal},
+                    {"untung_bersih", keuntungan_bersih},
+                    {"keterangan", "Panen Kolam ID " + to_string(id)}
+                };
+
+                keuanganj.push_back(keuangan_baru);
+
+                ofstream fileOutKeuangan(FILE_KEUANGAN);
+                fileOutKeuangan << keuanganj.dump(4);
+                fileOutKeuangan.close();
 
                 ditemukan = true;
                 break;
@@ -1537,4 +1636,312 @@ void jual_ikan()
 
 void laporan_keuangan()
 {
+    json j = load_json(FILE_KEUANGAN, "[INFO] Belum Ada Riwayat Penjualan / Laporan Keuangan!!!");
+    
+    if (j.empty())
+    {
+        system("pause");
+        system("cls");
+        return;
+    }
+
+    for (int i = 0; i < (int)j.size(); i++)
+    {
+        for (int k = 0; k < (int)j.size() - 1 - i; k++)
+        {
+            if (j[k]["id_penjualan_kolam"] > j[k + 1]["id_penjualan_kolam"])
+            {
+                swap(j[k], j[k + 1]);
+            }
+        }
+    }
+
+    double total_pengeluaran = 0.0;
+    double total_untung = 0.0;
+
+    system("cls");
+    cout << "===============================================================================" << endl;
+    cout << "                    BUKU BESAR & LAPORAN KEUANGAN TAMBAK                       " << endl;
+    cout << "===============================================================================" << endl;
+    cout << "ID Kolam | Keterangan         | Pengeluaran (Modal)  | Keuntungan Bersih      |" << endl;
+    cout << "-------------------------------------------------------------------------------" << endl;
+
+    for (const auto &item : j)
+    {
+        int id = item["id_penjualan_kolam"];
+        string ket = item["keterangan"];
+        double pengeluaran = item["pengeluaran"];
+        double untung = item["untung_bersih"];
+
+        total_pengeluaran += pengeluaran;
+        total_untung += untung;
+
+        cout << " " << id << "\t | " << ket << "    | Rp " << (long long)pengeluaran << "\t\t | Rp " << (long long)untung << "\n";
+    }
+
+    cout << "-------------------------------------------------------------------------------" << endl;
+    cout << " [+] TOTAL AKUMULASI MODAL DIKELUARKAN  : Rp " << (long long)total_pengeluaran << endl;
+    cout << " [+] TOTAL AKUMULASI KEUNTUNGAN BERSIH  : Rp " << (long long)total_untung << endl;
+    cout << "===============================================================================" << endl;
+    cout << "\n";
+
+    system("pause");
+    system("cls");
+}
+
+void laporan_staff(int id)
+{
+    json j;
+    ifstream fileIn(FILE_LAPORAN);
+
+    if (fileIn.is_open())
+    {
+        fileIn >> j;
+        fileIn.close();
+    }
+
+    bool valid = false;
+
+    cout << "========================================================" << endl;
+    cout << "============== KINERJA STAFF BERDASARKAN ID ============" << endl;
+    cout << "========================================================" << endl;
+
+    for (const auto &item : j)
+    {
+        if(item["id_staff"] == id)
+        {
+            valid = true;
+            cout << "ID Staff     : " << item["id_staff"] << endl;
+            cout << "Kegiatan     : " << item["jenis_kegiatan"] << endl;
+            cout << "Dicatat Oleh : " << item["dicatat_oleh"] << endl;
+            cout << "ID Kolam     : " << item["id_kolam"] << endl;
+
+            if (item["jenis_kegiatan"] == "Tebar Pakan")
+            {
+                cout << "Total Pakan  : " << item["total_pakan_gram"] << " gram" << endl;
+                cout << "Total Biaya  : Rp " << item["total_biaya"] << endl;
+            }
+            else if (item["jenis_kegiatan"] == "Catat Mortalitas")
+            {
+                cout << "Total Mati   : " << item["total_mati"] << " ekor" << endl;
+                cout << "Pop. Akhir   : " << item["populasi_akhir"] << " ekor" << endl;
+            }
+            cout << "--------------------------------------------------------" << endl;
+        }
+    }
+
+    if (valid)
+    {
+        cout << "\n[SUCCESS] Staff Dengan (ID: " << id << ") Ditemukan!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+    else
+    {
+        cout << "\n[ERROR] Staff Dengan (ID: " << id << ") Tidak Ditemukan!!!" << endl;
+        system("pause");
+        system("cls");
+        return;
+    }
+}
+
+void laporan_staff()
+{
+    json j;
+    ifstream fileIn(FILE_LAPORAN);
+
+    if (fileIn.is_open())
+    {
+        fileIn >> j;
+        fileIn.close();
+    }
+
+    string pilihan_menu, input_id;
+    int pilihan, id;
+    bool loop = true;
+
+    while (loop)
+    {
+        system("cls");
+        cout << "==============================================" << endl;
+        cout << "========== MENU LIHAT KINERJA STAFF ==========" << endl;
+        cout << "==============================================" << endl;
+        cout << "1. Lihat Kinerja Staff Berdasarkan ID Staff" << endl;
+        cout << "2. Lihat Kinerja Staff Dari Laporan Tebar Benih " << endl;
+        cout << "3. Lihat Kinerja Staff Dari Laporan Mortalitas" << endl;
+        cout << "4. Keluar" << endl;
+        cout << "Masukan Pilihan: ";
+        getline(cin >> ws, pilihan_menu);
+
+        try
+        {
+            pilihan = stoi(pilihan_menu);
+        }
+        catch (const exception &e)
+        {
+            pilihan = 0;
+        }
+
+        switch (pilihan)
+        {
+            case 1:
+                system("cls");
+
+                while (true)
+                {
+                    try
+                    {
+                        cout << "Masukan ID Staff Yang Ingin Di Lihat Kinerjanya (Input 0 Untuk Batal): ";
+                        getline(cin >> ws, input_id);
+
+                        id = stoi(input_id);
+
+                        if (id == 0)
+                        {
+                            break;
+                            system("cls");
+                        }
+
+                        break;
+                    }
+                    catch (const exception &e)
+                    {
+                        cout << "[ERROR] Input Harus Berupa Angka!!!" << endl;
+                        system("pause");
+                        system("cls");
+                    }
+                }
+
+                laporan_staff(id);
+
+                break;
+
+            case 2:
+                system("cls");
+                cout << "=======================================================" << endl;
+                cout << "========== KINERJA STAFF LAPORAN TEBAR BENIH ==========" << endl;
+                cout << "=======================================================" << endl;
+
+                for (int i = 0; i < j.size(); i++)
+                {
+                    for (int k = 0; k < j.size() - 1 - i; k++)
+                    {
+                        if (j[k]["id_kolam"] > j[k + 1]["id_kolam"])
+                        {
+                            swap(j[k], j[k + 1]);
+                        }
+                    }
+                }
+
+                for (const auto &item : j)
+                {
+                    if (item["jenis_kegiatan"] == "Tebar Pakan")
+                    {
+                        cout << "ID Kolam       : " << item["id_kolam"] << endl;
+                        cout << "Rentang Hari   : " << item["rentang_hari"] << endl;
+                        cout << "Total Pakan    : " << item["total_pakan_gram"] << " gram" << endl;
+                        cout << "Total Biaya    : " << item["total_biaya"] << endl;
+                        cout << "Dicatat Oleh   : " << item["dicatat_oleh"] << endl;
+                        cout << "ID Staff       : " << item["id_staff"] << endl;
+                        cout << "==============================================" << endl;
+                    }
+                }
+
+                system("pause");
+                system("cls");
+                break;
+
+            case 3:
+                system("cls");
+                cout << "=======================================================" << endl;
+                cout << "=========== KINERJA STAFF LAPORAN MORTALITAS ==========" << endl;
+                cout << "=======================================================" << endl;
+
+                for (int i = 0; i < j.size(); i++)
+                {
+                    for (int k = 0; k < j.size() - 1 - i; k++)
+                    {
+                        if (j[k]["id_kolam"] > j[k + 1]["id_kolam"])
+                        {
+                            swap(j[k], j[k + 1]);
+                        }
+                    }
+                }
+
+                for (const auto &item : j)
+                {
+                    if (item["jenis_kegiatan"] == "Catat Mortalitas")
+                    {
+                        cout << "ID Kolam       : " << item["id_kolam"] << endl;
+                        cout << "Total Mati     : " << item["total_mati"] << endl;
+                        cout << "Populasi Akhir : " << item["populasi_akhir"] << endl;
+                        cout << "Dicatat oleh   : " << item["dicatat_oleh"] << endl;
+                        cout << "ID Staff       : " << item["id_staff"] << endl;
+                        cout << "==============================================" << endl;
+                    }
+                }
+
+                system("pause");
+                system("cls");
+                break;
+        }
+    }
+}
+
+void rekber_admin()
+{
+    json r_rekber = load_json(FILE_REKBER, "[INFO] Data Rekening Admin Belum Dibuat!!!");
+
+    if (r_rekber.empty())
+    {
+        system("pause");
+        system("cls");
+        return;
+    }
+
+    //pakai [0] karena bentuknya array
+    double saldo_admin = r_rekber[0].value("rekening_admin", 0.0);
+
+    //Konversi ke bilangan bulat panjang biar nggak muncul huruf 'e' 
+    long long cetak_saldo = (long long)saldo_admin;
+
+    
+    string status_keuangan;
+    if (cetak_saldo >= 50000000) 
+    {
+        status_keuangan = "DANA AMAN !!!";
+    } 
+    else if (cetak_saldo >= 15000000) 
+    {
+        status_keuangan = "DANA STABIL !!!";
+    } 
+    else if (cetak_saldo >= 5000000) 
+    {
+        status_keuangan = "DANA CUKUP !!!";
+    } 
+    else 
+    {
+        status_keuangan = "DAH NAK BANGKRUT NI !!!";
+    }
+
+    system("cls");
+    cout << "=========================================================" << endl;
+    cout << "                 BRANKAS UTAMA PERUSAHAAN                " << endl;
+    cout << "                 >>   PT TAMBAK LELE   <<                " << endl;
+    cout << "=========================================================" << endl;
+    cout << "                                                         " << endl;
+    cout << "   [+] TOTAL KAS TERSEDIA : Rp " << cetak_saldo << endl;
+    cout << "                                                         " << endl;
+    cout << "---------------------------------------------------------" << endl;
+    cout << "   [*] STATUS KEUANGAN    : " << status_keuangan << endl;
+    cout << "   [*] HAK AKSES          : Executive Admin              " << endl;
+    cout << "                                                         " << endl;
+    cout << "=========================================================" << endl;
+    cout << "   [!] Gunakan Dana Dengan Bijak Jangan Sampai Bangkrut  " << endl;
+    cout << "=========================================================" << endl;
+    cout << "\n";
+
+    system("pause");
+    system("cls");
 }
