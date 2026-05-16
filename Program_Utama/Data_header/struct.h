@@ -8,10 +8,15 @@ struct Kolam
     int id_kolam;
     string status_kolam;
     string tipe_kolam;
+    string fase_kolam;
     int kapasitas;
     int populasi_ikan;
     int total_mati;
     int total_harga_benih;
+    int total_berat_kolam; // gram
+    int total_harga_pakan;
+    int total_modal;
+    int umur_kolam;
 };
 
 struct Staff
@@ -43,6 +48,13 @@ struct Keuangan
     double pengeluaran;
     double untung_bersih;
     string keterangan;
+};
+
+struct Pakan
+{
+    int stok_kg;
+    int harga_per_kg;
+    int total_modal_pakan;
 };
 
 #endif
