@@ -321,7 +321,7 @@ void menu_staff(int &id_staff)
         system("cls");
 
         cout << "======================================" << endl;
-        cout << "===== RUANG KENDALI ADMIN TAMBAK =====" << endl;
+        cout << "===== RUANG KENDALI STAFF TAMBAK =====" << endl;
         cout << "======================================" << endl;
         cout << "1. Update Jatah Pakan" << endl;
         cout << "2. Catat Kematian Ikan" << endl;
